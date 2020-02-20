@@ -7,7 +7,7 @@
 # This charpter is aim to describe how to collect the data
 # Collected data including bike occupation situation and weather information
 
-# In[1]:
+# In[2]:
 
 
 import requests
@@ -18,14 +18,6 @@ import time
 
 
 # In[3]:
-
-
-url='http://api.openweathermap.org/data/2.5/weather?q=Dublin,ie&units=metric&APPID=7c4d32959a99216eeb3c99efc8000278'
-weatherDataString=requests.get(url=url)
-wds = weatherDataString.json()
-
-
-# In[4]:
 
 
 def weather_info():
@@ -91,26 +83,26 @@ def write_db(String):
     conn.close()
 
 
-# In[5]:
+# In[4]:
 
 
 creat_table="CREATE TABLE Weather(dateTime DATETIME, weatherID int, weatherMain varchar(255), weatherDescr varchar(255), weatherIcon varchar(255), temperature int, pressure int, humidity int, tempMin int ,tempMax int, visibility int, windSpeed int, windDeg int, clouds int);"
         
 
 
-# In[6]:
+# In[5]:
 
 
-host="dublinbike.cczltqdfsp1t.eu-west-1.rds.amazonaws.com"
+host="dublinbike.cx8vz93uf5cv.eu-west-1.rds.amazonaws.com"
 port=3306
-dbname="dublin"
-user="root"
-password="shuyuqian"
+dbname="dublinbike"
+user="admin"
+password="pengpeng"
 
 
 # Create Table for the first time. 
 
-# In[7]:
+# In[6]:
 
 
 conn = pymysql.connect(host, user=user,port=port, passwd=password, db=dbname)
