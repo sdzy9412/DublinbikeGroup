@@ -37,7 +37,7 @@ def main():
 
 
     cursor.execute(
-        "CREATE TABLE `dublinbike`.`dublinbike_static1` ( `number` INT NULL,  `name` VARCHAR(45) NULL,  `address` VARCHAR(45) NULL,  `latitude` VARCHAR(45) NULL,  `longitude` VARCHAR(45) NULL);")
+        "CREATE TABLE `dublinbike`.`dublinbike_static` ( `number` INT NULL,  `name` VARCHAR(45) NULL,  `address` VARCHAR(45) NULL,  `latitude` VARCHAR(45) NULL,  `longitude` VARCHAR(45) NULL);")
     # parse json data to SQL insert
     for i, item in enumerate(json_obj):
         number = validate_string(item.get("number", None))
@@ -48,7 +48,7 @@ def main():
 
 
         cursor.execute(
-            "INSERT INTO dublinbike_static1 (number,	name,	address,	latitude,	longitude) VALUES (%s,	%s,	%s,	%s,	%s)",    (number, name, address, latitude, longitude))
+            "INSERT INTO dublinbike_static (number,	name,	address,	latitude,	longitude) VALUES (%s,	%s,	%s,	%s,	%s)",    (number, name, address, latitude, longitude))
     con.commit()
     con.close()
 
