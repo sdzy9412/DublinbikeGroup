@@ -123,7 +123,7 @@ conn.close()
 
 while True:
     # fetch data dynamically
-    time.sleep(10*60) # the time period is 10 mins and it can be changed.
+    time.sleep(180*60) # the time period is  3hrs and it can be changed.
     winfo=weather_info()
     write_db(winfo)
 
