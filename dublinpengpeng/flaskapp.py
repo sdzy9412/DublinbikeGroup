@@ -28,5 +28,10 @@ for station in station_file:
 def index():
     return render_template("index.html", bike_station=bike_station)
 
+# edit at 25/2
+@app.route("/test")
+def index():
+    return render_template("index.html", bike_station=bike_station)
+
 if __name__ == '__main__':
     app.run(host="localhost", debug=True)
