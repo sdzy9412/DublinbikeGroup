@@ -1,0 +1,69 @@
+<!DOCTYPE html >
+<!-- this html is design for searching noble prize; a brief introduction is written inside related function. Javascript is written above the html. as this nobles.html opened from folder, the category in select field should be available. if it is not available, please try to open this file from folder in Brackets. thanks for your time.  -->
+<html>
+<head>
+<script type="text/javascript"  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTF-S3Ye0aZdAymDWC-V0zVZVJXywAtgo&callback=initMap"
+    async defer></script>
+
+ <link href="stylesheet.css" rel="stylesheet" type="text/css" media="all" />
+
+</head>
+<script type="text/javascript">
+  function initMap() {
+    var latlng = new google.maps.LatLng(53.350140, -6.266155);
+    var myOptions = {
+      zoom: 13,
+      center: latlng,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    var map = new google.maps.Map(document.getElementById("map"),
+        myOptions);
+  }
+
+</script>
+
+<body onload="initMap()">
+<!-- Title-->
+<h1 style="color: #B8860B; text-align: center; font-family:Optima; font-size: 34px; "> Dublin Bike</h1>
+
+<!-- header --->
+<div id="map" style="width:100%;height:500px;margin: 0px"></div>
+
+<p style="margin-bottom: 0; margin-top: 0;font-size: 15px; color: dimgrey" >▲ Google Map --- version 1.0</p>
+
+ <!-- selection field-->
+    <h1>Nobel Laureates of All Times</h1>
+    <h3>Fill the fields below to filter the winner results or press Submit to see everthing</h3>
+    <div id="choosefield">
+      <span>Choose a category: </span>
+      <form id="selForm" onChange="getSelectedField(this.selectedIndex);">
+      </form>
+        <p id="demo" hidden=""></p><br>
+
+        <span>Year of Award:</span>
+        <input style='margin-left: 0' type='text' id='search_single_year' placeholder='From year' onchange="checkyear()">
+        <input style='margin-left: 0' type='text' id='search_range_year' placeholder='To year' onchange="checkyear()"><br>
+        <p>Single year: <input type="radio" name="select"  id="single_year" onclick="hideYear()"> Range of years: <input type="radio" name="select" id="range_year"checked onclick="showYear()"></p>
+        <p id="yrange" hidden=""></p>
+
+        <p id="gcheck" hidden="">both</p><br>
+
+      </div>
+        <div>
+          <input type='button' id='submit_button' value='Submit' onclick="mytable()">
+
+        </div>
+
+      <!-- generate Table -->
+        <p id='gender' style="display: none;font-size: 15px;" > Gender:
+        <input type='radio' id='gender_both' value="both" name = "c" checked onclick='checkGender("both"); mytable()'>Both
+        <input type='radio' id='gender_male' name ="c" value = "male" onclick='checkGender("male"); mytable()'>Male
+        <input type='radio' id='gender_female' name="c" value="female"
+               onclick='checkGender("female"); mytable()'>Female</p>
+
+     <section id="main"></section>
+
+    </body>
+</html>
+
+
