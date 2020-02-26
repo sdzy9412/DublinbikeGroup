@@ -86,7 +86,7 @@ def write_db(String):
 # In[4]:
 
 
-creat_table="CREATE TABLE Weather(dateTime DATETIME, weatherID int, weatherMain varchar(255), weatherDescr varchar(255), weatherIcon varchar(255), temperature int, pressure int, humidity int, tempMin int ,tempMax int, visibility int, windSpeed int, windDeg int, clouds int);"
+creat_table="CREATE TABLE IF NOT EXISTS Weather(dateTime DATETIME, weatherID int, weatherMain varchar(255), weatherDescr varchar(255), weatherIcon varchar(255), temperature int, pressure int, humidity int, tempMin int ,tempMax int, visibility int, windSpeed int, windDeg int, clouds int);"
         
 
 
