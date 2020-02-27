@@ -23,15 +23,11 @@ bike_station = []
 
 for station in station_file:
     bike_station.append([station.get('number'), station.get('name'), station.get('latitude'), station.get('longitude')])
+length = len(bike_station)
 
 @app.route("/")
 def index():
-    return render_template("index.html", bike_station=bike_station)
-
-# edit at 25/2
-@app.route("/test")
-def index():
-    return render_template("index.html", bike_station=bike_station)
+    return render_template("index.html", bike_station=bike_station, length=length)
 
 if __name__ == '__main__':
     app.run(host="localhost", debug=True)
