@@ -9,59 +9,52 @@
 </style>
 <script type="text/javascript"
   src=
-"https://maps.googleapis.com/maps/api/js?key=AIzaSyDJW4jsPlNKgv6jFm3B5Edp5ywgdqLWdmc&sensor=false">
+"https://maps.googleapis.com/maps/api/js?key=AIzaSyDJW4jsPlNKgv6jFm3B5Edp5ywgdqLWdmc">
 </script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script type="text/javascript">
 
 
   function initialize() {
-
     var myOptions = {
-      center: new google.maps.LatLng(53.350140, -6.266155),
-      zoom: 15,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-
+          center: new google.maps.LatLng(53.350140, -6.266155),
+          zoom: 15,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
     };
-    var map = new google.maps.Map(document.getElementById("default"),
-        myOptions);
+    var map = new google.maps.Map(document.getElementById("default"), myOptions);
+    $.getJSON("http://localhost:5000/stations", function(data){
+          $.each(data, function(i, station){
+            console.log(station[0]);
+            var length = Object.keys(station).length;
+            console.log(length);
+            var i;
+            for (i = 0; i < length; i++) {
+               console.log(station[i][1]);
+               var marker = new google.maps.Marker({
+                      map: map,
+                      position: new google.maps.LatLng(station[i][3], station[i][4])
+                    });
+                map.setCenter(marker.getPosition())
+                var content = 'station[i][1]';
+                var infowindow = new google.maps.InfoWindow();
 
-    var marker, i;
-    {% for i in range(length) %}
-        var marker = new google.maps.Marker({
-              map: map,
-              position: new google.maps.LatLng({{bike_station[i][2]}}, {{bike_station[i][3]}})
-            });
-        map.setCenter(marker.getPosition())
-        var content = '{{bike_station[i][1]}}';
-        var infowindow = new google.maps.InfoWindow();
+                google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){
+                        return function() {
+                           infowindow.setContent(content);
+                           infowindow.open(map,marker);
+                        };
+                    })(marker,content,infowindow));
+            }
 
-        google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){
-                return function() {
-                   infowindow.setContent(content);
-                   infowindow.open(map,marker);
-                };
-            })(marker,content,infowindow));
 
-        {% endfor %}
-
+    });
+    });
   }
 
 
-  </script>
- </head>
- <body onload="initialize()">
-  <div id="default" style="width:1500px;height:500px;"></div>
- </body>
-  </html>
-
-  }
-  }
-
-
-
-  </script>
- </head>
- <body onload="initialize()">
-  <div id="default" style="width:100%; height:100%"></div>
- </body>
- </html>
+</script>
+</head>
+<body onload="initialize()">
+<div id="default" style="width:100%; height:80%"></div>
+</body>
+</html>
