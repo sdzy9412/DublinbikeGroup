@@ -116,7 +116,7 @@ def main():
         write_to_file(r.text)
         station_to_db(r.text)
         availability_to_db(r.text)
-        time.sleep(5)
+        time.sleep(30*60)
         # except:
         #     print(traceback.format_exc())
     return
