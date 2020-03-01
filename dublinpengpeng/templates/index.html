@@ -35,7 +35,7 @@
                       position: new google.maps.LatLng(station[i][3], station[i][4])
                     });
                 map.setCenter(marker.getPosition())
-                var content = 'station[i][1]';
+                var content = station[i][1];
                 var infowindow = new google.maps.InfoWindow();
 
                 google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){
