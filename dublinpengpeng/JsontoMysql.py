@@ -2,13 +2,13 @@
 # coding: utf-8
 
 
-import os
+# import os
 import json
-import pymysql
-import sqlalchemy as sqla
+# import pymysql
+# import sqlalchemy as sqla
 from sqlalchemy import create_engine
 import requests
-import traceback
+# import traceback
 import datetime
 import time
 
