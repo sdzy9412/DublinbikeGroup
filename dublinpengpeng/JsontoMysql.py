@@ -4,7 +4,6 @@
 
 import os
 import json
-import pandas as pd
 import pymysql
 import sqlalchemy as sqla
 from sqlalchemy import create_engine
