@@ -13,11 +13,11 @@ import traceback
 import datetime
 import time
 
-URI = "dublinbike.cx8vz93uf5cv.eu-west-1.rds.amazonaws.com"
+URI = "dublinbike.cczltqdfsp1t.eu-west-1.rds.amazonaws.com"
 PORT = "3306"
-DB = "dublinbike"
-USER = "admin"
-PASSWORD = "pengpeng"
+DB = "new_connection"
+USER = "root"
+PASSWORD = "shuyuqian"
 
 SQL_CREATE_DB = "CREATE DATABASE IF NOT EXISTS dublinbike;"
 
