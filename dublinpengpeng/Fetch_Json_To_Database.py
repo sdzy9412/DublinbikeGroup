@@ -37,7 +37,7 @@ def main():
 
 
     cursor.execute(
-        "CREATE TABLE `dublinbike`.`dublinbike_static` ( `number` INT NULL,  `name` VARCHAR(45) NULL,  `address` VARCHAR(45) NULL,  `latitude` VARCHAR(45) NULL,  `longitude` VARCHAR(45) NULL);")
+        "CREATE TABLE `dublin`.`dublinbike_static` ( `number` INT NULL,  `name` VARCHAR(45) NULL,  `address` VARCHAR(45) NULL,  `latitude` VARCHAR(45) NULL,  `longitude` VARCHAR(45) NULL);")
     # parse json data to SQL insert
     for i, item in enumerate(json_obj):
         number = validate_string(item.get("number", None))
