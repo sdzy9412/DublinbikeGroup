@@ -10,9 +10,8 @@ import pymysql
 
 app = Flask(__name__,static_url_path='')
 
-
 def connect_to_database():
-    conn = pymysql.connect(host='dublinbike.cx8vz93uf5cv.eu-west-1.rds.amazonaws.com', user='admin', passwd='pengpeng',db='dublinbike')
+    conn = pymysql.connect(host='dublinbike.cczltqdfsp1t.eu-west-1.rds.amazonaws.com', user='root', passwd='shuyuqian',db='new_connection')
     return conn
 
 @app.route("/")
