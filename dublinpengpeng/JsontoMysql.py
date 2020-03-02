@@ -15,11 +15,11 @@ import time
 
 URI = "dublinbike.cczltqdfsp1t.eu-west-1.rds.amazonaws.com"
 PORT = "3306"
-DB = "new_connection"
+DB = "dublin"
 USER = "root"
 PASSWORD = "shuyuqian"
 
-SQL_CREATE_DB = "CREATE DATABASE IF NOT EXISTS dublinbike;"
+SQL_CREATE_DB = "CREATE DATABASE IF NOT EXISTS dublin;"
 
 SQL_CREATE_STATIC = '''
 CREATE TABLE IF NOT EXISTS station(
