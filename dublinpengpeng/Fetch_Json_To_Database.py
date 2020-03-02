@@ -26,7 +26,7 @@ def main():
 
             
     # connect to MySQL
-    con = pymysql.connect(host='dublinbike.cczltqdfsp1t.eu-west-1.rds.amazonaws.com', user='root', passwd='shuyuqian', db='new_connection')
+    con = pymysql.connect(host='dublinbike.cczltqdfsp1t.eu-west-1.rds.amazonaws.com', user='root', passwd='shuyuqian', db='dublin')
     cursor = con.cursor()
 
 
