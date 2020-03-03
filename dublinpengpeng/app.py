@@ -14,9 +14,17 @@ def connect_to_database():
     conn = pymysql.connect(host='dublinbike.cczltqdfsp1t.eu-west-1.rds.amazonaws.com', user='root', passwd='shuyuqian',db='dublin')
     return conn
 
+
+weatherQuery = "SELECT * FROM Weather WHERE dateTime=(SELECT MAX(dateTime) FROM Weather);"
 @app.route("/")
 def index():
-    return render_template('index.html')
+    conn = connect_to_database()
+    cursorObject = conn.cursor(pymysql.cursors.DictCursor)
+    with cursorObject as cursor:
+        cursor.execute(weatherQuery)
+        wds = cursor.fetchall()
+        conn.close()
+    return render_template('index.html', wds=wds)
 
 @app.route("/stations", methods=['GET', 'POST'])
 def get_station():

@@ -17,8 +17,8 @@ PORT = "3306"
 DB = "dublin"
 USER = "root"
 PASSWORD = "shuyuqian"
-
-SQL_CREATE_DB = "CREATE DATABASE IF NOT EXISTS dublin;"
+#####
+SQL_CREATE_DB = "CREATE DATABASE IF NOT EXISTS dublinbike_static;"
 
 SQL_CREATE_STATIC = '''
 CREATE TABLE IF NOT EXISTS station(

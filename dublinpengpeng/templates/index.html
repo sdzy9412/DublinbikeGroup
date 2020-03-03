@@ -7,21 +7,18 @@
   body { height: 100%; margin: 0; padding: 0 }
   #map_canvas { height: 100% }
 </style>
-<script type="text/javascript"
-  src=
-"https://maps.googleapis.com/maps/api/js?key=AIzaSyDJW4jsPlNKgv6jFm3B5Edp5ywgdqLWdmc">
-</script>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script type="text/javascript">
 
-
-  function initialize() {
+  function myMap() {
     var myOptions = {
           center: new google.maps.LatLng(53.350140, -6.266155),
           zoom: 15,
           mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     var map = new google.maps.Map(document.getElementById("default"), myOptions);
+
     $.getJSON("http://localhost:5000/stations", function(data){
           $.each(data, function(i, station){
             console.log(station[0]);
@@ -35,7 +32,7 @@
                       position: new google.maps.LatLng(station[i][3], station[i][4])
                     });
                 map.setCenter(marker.getPosition())
-                var content = station[i][1];
+                var content = '<img src="image/{{wds[0]['weatherIcon']}}.png" style="width: 30%">'+'<p> Bike Station is: '+station[i][1]+'</p>'+'<p>Temperature is: '+{{ wds[0]['temperature'] }}+' centigrade</p>'+'<p>Wind speed is: '+{{ wds[0]['windSpeed'] }}+'</p>';
                 var infowindow = new google.maps.InfoWindow();
 
                 google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){
@@ -54,7 +51,13 @@
 
 </script>
 </head>
-<body onload="initialize()">
+<body >
 <div id="default" style="width:100%; height:80%"></div>
+<p>{{ wds[0]['weatherID'] }}</p>
+<img src="image/{{wds[0]['weatherIcon']}}.png" style="width: 30%">
+
+<script type="text/javascript"
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTF-S3Ye0aZdAymDWC-V0zVZVJXywAtgo&callback=myMap">
+</script>
 </body>
 </html>

@@ -1,10 +1,12 @@
 #!/usr/bin/env python
+#!/usr/bin/env python
+#!/usr/bin/env python
 # coding: utf-8
 
 
 
 import json
-import pandas as pd
+#import pandas as pd
 import pymysql
 
 def main():
