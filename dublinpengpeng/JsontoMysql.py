@@ -2,24 +2,23 @@
 # coding: utf-8
 
 
-import os
+# import os
 import json
-import pandas as pd
-import pymysql
-import sqlalchemy as sqla
+# import pymysql
+# import sqlalchemy as sqla
 from sqlalchemy import create_engine
 import requests
-import traceback
+# import traceback
 import datetime
 import time
 
-URI = "dublinbike.cx8vz93uf5cv.eu-west-1.rds.amazonaws.com"
+URI = "dublinbike.cczltqdfsp1t.eu-west-1.rds.amazonaws.com"
 PORT = "3306"
-DB = "dublinbike"
-USER = "admin"
-PASSWORD = "pengpeng"
+DB = "dublin"
+USER = "root"
+PASSWORD = "shuyuqian"
 
-SQL_CREATE_DB = "CREATE DATABASE IF NOT EXISTS dublinbike;"
+SQL_CREATE_DB = "CREATE DATABASE IF NOT EXISTS dublin;"
 
 SQL_CREATE_STATIC = '''
 CREATE TABLE IF NOT EXISTS station(
@@ -64,14 +63,6 @@ def main():
     engine = create_engine("mysql+mysqldb://{}:{}@{}:{}/{}".format(USER, PASSWORD, URI, PORT, DB), echo=True)
     engine.execute(SQL_CREATE_DB)
 
-    # Create target Directory if don't exist
-    if not os.path.exists("data"):
-        os.mkdir("data")
-
-    def write_to_file(text):
-        with open("data/bikes_{}".format(now).replace(" ", "_"), "w") as f:
-            f.write(text)
-
     def station_to_db(text):
         try:
             res = engine.execute("DROP TABLE IF EXISTS station")
@@ -113,10 +104,9 @@ def main():
         now = datetime.datetime.now()
         r = requests.get(STATIONS, params={"apiKey": APIKEY, "contract": NAME})
         print(r, now)
-        write_to_file(r.text)
         station_to_db(r.text)
         availability_to_db(r.text)
-        time.sleep(5)
+        time.sleep(30*60)
         # except:
         #     print(traceback.format_exc())
     return

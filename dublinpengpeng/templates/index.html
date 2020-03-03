@@ -1,47 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Dublin Bike</title>
-    <style>
-        #map{
-        width: 100%;
-        height: 500px;
-        }
-    </style>
-    <script type="text/javascript">
-    var map;
-    function initMap() {
-    var latlng = new google.maps.LatLng(53.350140, -6.266155);
-    var map = new google.maps.Map(document.getElementById('map'), {
-      zoom: 10,
-      center: latlng,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
+<html>
+    <head>
+
+<style type="text/css">
+  html { height: 100% }
+  body { height: 100%; margin: 0; padding: 0 }
+  #map_canvas { height: 100% }
+</style>
+<script type="text/javascript"
+  src=
+"https://maps.googleapis.com/maps/api/js?key=AIzaSyDJW4jsPlNKgv6jFm3B5Edp5ywgdqLWdmc">
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+
+  function initialize() {
+    var myOptions = {
+          center: new google.maps.LatLng(53.350140, -6.266155),
+          zoom: 15,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    var map = new google.maps.Map(document.getElementById("default"), myOptions);
+    $.getJSON("http://localhost:5000/stations", function(data){
+          $.each(data, function(i, station){
+            console.log(station[0]);
+            var length = Object.keys(station).length;
+            console.log(length);
+            var i;
+            for (i = 0; i < length; i++) {
+               console.log(station[i][1]);
+               var marker = new google.maps.Marker({
+                      map: map,
+                      position: new google.maps.LatLng(station[i][3], station[i][4])
+                    });
+                map.setCenter(marker.getPosition())
+                var content = station[i][1];
+                var infowindow = new google.maps.InfoWindow();
+
+                google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){
+                        return function() {
+                           infowindow.setContent(content);
+                           infowindow.open(map,marker);
+                        };
+                    })(marker,content,infowindow));
+            }
+
+
     });
+    });
+  }
 
-    var infowindow = new google.maps.InfoWindow();
 
-    var marker, i;
-
-    for (i = 0; i < bike_station.length; i++) {
-      marker = new google.maps.Marker({
-        position: new google.maps.LatLng(bike_station[i][2], bike_station[i][3]),
-        map: map
-      });
-
-      google.maps.event.addListener(marker, 'click', (function(marker, i) {
-        return function() {
-          infowindow.setContent(bike_station[i][1]);
-          infowindow.open(map, marker);
-        }
-      })(marker, i));
-    }}
-    </script>
-
+</script>
 </head>
-<body>
-    <div id='map'></div>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBRM6Ek4r2vU_emN068XeioRKoafdhxneM&callback=initMap"
-    async defer></script>
+<body onload="initialize()">
+<div id="default" style="width:100%; height:80%"></div>
 </body>
 </html>

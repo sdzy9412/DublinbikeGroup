@@ -93,11 +93,11 @@ creat_table="CREATE TABLE IF NOT EXISTS Weather(dateTime DATETIME, weatherID int
 # In[5]:
 
 
-host="dublinbike.cx8vz93uf5cv.eu-west-1.rds.amazonaws.com"
+host="dublinbike.cczltqdfsp1t.eu-west-1.rds.amazonaws.com"
 port=3306
-dbname="dublinbike"
-user="admin"
-password="pengpeng"
+dbname="dublin"
+user="root"
+password="shuyuqian"
 
 
 # Create Table for the first time. 

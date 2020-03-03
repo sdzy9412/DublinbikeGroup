@@ -24,9 +24,9 @@ def main():
             else:
                 return val
 
-
+            
     # connect to MySQL
-    con = pymysql.connect(host='dublinbike.cx8vz93uf5cv.eu-west-1.rds.amazonaws.com', user='admin', passwd='pengpeng', db='dublinbike')
+    con = pymysql.connect(host='dublinbike.cczltqdfsp1t.eu-west-1.rds.amazonaws.com', user='root', passwd='shuyuqian', db='dublin')
     cursor = con.cursor()
 
 
@@ -37,7 +37,7 @@ def main():
 
 
     cursor.execute(
-        "CREATE TABLE `dublinbike`.`dublinbike_static` ( `number` INT NULL,  `name` VARCHAR(45) NULL,  `address` VARCHAR(45) NULL,  `latitude` VARCHAR(45) NULL,  `longitude` VARCHAR(45) NULL);")
+        "CREATE TABLE `dublin`.`dublinbike_static` ( `number` INT NULL,  `name` VARCHAR(45) NULL,  `address` VARCHAR(45) NULL,  `latitude` VARCHAR(45) NULL,  `longitude` VARCHAR(45) NULL);")
     # parse json data to SQL insert
     for i, item in enumerate(json_obj):
         number = validate_string(item.get("number", None))
