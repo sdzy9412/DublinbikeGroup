@@ -32,8 +32,10 @@
                       position: new google.maps.LatLng(station[i][3], station[i][4])
                     });
                 map.setCenter(marker.getPosition())
-                var content = '<img src="image/{{wds[0]['weatherIcon']}}.png" style="width: 30%">'+'<p> Bike Station is: '+station[i][1]+'</p>'+'<p>Temperature is: '+{{ wds[0]['temperature'] }}+' centigrade</p>'+'<p>Wind speed is: '+{{ wds[0]['windSpeed'] }}+'</p>';
-                var infowindow = new google.maps.InfoWindow();
+                var weathericon = '{{wds[0]['weatherIcon']}}';
+                // do not need to add the url of static, the image file can be used directly!
+                var content = '<img src="{{wds[0]['weatherIcon']}}.png" style="width: 40%">'+'<p> Bike Station is: '+station[i][1]+'</p>'+'<p>Temperature is: '+{{ wds[0]['temperature'] }}+' centigrade</p>'+'<p>Wind speed is: '+{{ wds[0]['windSpeed'] }}+'</p>';
+                var infowindow = new google.maps.InfoWindow({maxWidth: 220});
 
                 google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){
                         return function() {
@@ -54,7 +56,7 @@
 <body >
 <div id="default" style="width:100%; height:80%"></div>
 <p>{{ wds[0]['weatherID'] }}</p>
-<img src="image/{{wds[0]['weatherIcon']}}.png" style="width: 30%">
+<img src="{{wds[0]['weatherIcon']}}.png" style="width: 30%">
 
 <script type="text/javascript"
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTF-S3Ye0aZdAymDWC-V0zVZVJXywAtgo&callback=myMap">
