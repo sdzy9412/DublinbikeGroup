@@ -115,8 +115,9 @@
 <!-- display the google map-->
 <div id="default" style="width:100%; height:80%"></div>
 <!-- test used only!-->
-<p id="test">{{ wds[0]['weatherID'] }}</p>
-
+<p id="test">
+  这里是测试的地方！
+</p>
 <!-- display the station search box-->
 <div id="pickUpStation"></div>
 <div id="dropOffStation"></div>
@@ -152,7 +153,6 @@
 
 
 <script>
-
   function myMap() {
   // myMap() aim to visualized the dublin map and the bikeInfo & weatherInfo
     var myOptions = {
@@ -161,7 +161,6 @@
           mapTypeId: google.maps.MapTypeId.ROADMAP
     };
     var map = new google.maps.Map(document.getElementById("default"), myOptions);
-
     $.getJSON("http://localhost:5000/stations", function(data){
           $.each(data, function(i, station){
             //console.log(station[0]);
@@ -175,9 +174,18 @@
                       position: new google.maps.LatLng(station[i][3], station[i][4])
                     });
                 map.setCenter(marker.getPosition())
+<!--dynamic infomation of bike-->
+                var k = {{dbi}};
+                for (j = 0; j < {{length_bike}}; j++) {
+                  if (station[i][0] == k[j][0]){
+                  console.log(k[j][0]);
+                  var available_bikes = k[j][1];
+                  }
+                }
+
                 var weathericon = '{{wds[0]['weatherIcon']}}';
                 // do not need to add the url of static, the image file can be used directly!
-                var content = '<img src="{{wds[0]['weatherIcon']}}.png" style="width: 40%">'+'<p> Bike Station is: '+station[i][1]+'</p>'+'<p>Temperature is: '+{{ wds[0]['temperature'] }}+' centigrade</p>'+'<p>Wind speed is: '+{{ wds[0]['windSpeed'] }}+'</p>';
+                var content = '<img src="{{wds[0]['weatherIcon']}}.png" style="width: 40%">'+'<p> Bike Station is: '+station[i][1]+'</p>'+'<p>Temperature is: '+{{ wds[0]['temperature'] }}+' centigrade</p>'+'<p>Wind speed is: '+{{ wds[0]['windSpeed'] }}+'</p>'+'<p>Availability Bikes are: '+available_bikes+'</p>';
                 var infowindow = new google.maps.InfoWindow({maxWidth: 220});
 
                 google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){
@@ -186,6 +194,7 @@
                            infowindow.open(map,marker);
                         };
                     })(marker,content,infowindow));
+
             }
 
 
@@ -315,7 +324,7 @@ $.getJSON("http://localhost:5000/stations", function(data){
              stationList.push(station[i][1])
            }
   stationList.sort();
-  console.log(stationList);
+<!--  console.log(stationList);-->
    // to design the pick up select box
   var selPickUpStation = "<select id=pickupstation style='background-color:#A1BBD0;font-family: 'Raleway', sans-serif;'>"
                 selPickUpStation += "<option value=" + 'selStation' + ">" + 'Select Pick Up Station:' + "</option>"

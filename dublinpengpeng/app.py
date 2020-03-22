@@ -16,6 +16,8 @@ def connect_to_database():
 
 
 weatherQuery = "SELECT * FROM Weather WHERE dateTime=(SELECT MAX(dateTime) FROM Weather);"
+DynamicInfo = "select * from availability order by datetime desc limit 110;"
+
 @app.route("/")
 def index():
     conn = connect_to_database()
@@ -23,8 +25,20 @@ def index():
     with cursorObject as cursor:
         cursor.execute(weatherQuery)
         wds = cursor.fetchall()
+        cursor.execute(DynamicInfo)
+        dbi = cursor.fetchall()
+        dbi_items=[]
+        for item in dbi:
+            dbi_all=[]
+            dbi_all.append(item['number'])
+            dbi_all.append(item['available_bikes'])
+            dbi_items.append(dbi_all)
         conn.close()
-    return render_template('index.html', wds=wds)
+    # print(dbi_all);
+    print(dbi_items);
+    length=len(dbi_items);
+    # print(item);
+    return render_template('index.html', dbi=dbi_items, wds=wds,length_bike=length)
 
 @app.route("/stations", methods=['GET', 'POST'])
 def get_station():
