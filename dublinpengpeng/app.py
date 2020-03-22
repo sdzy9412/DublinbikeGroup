@@ -35,7 +35,7 @@ def index():
             dbi_items.append(dbi_all)
         conn.close()
     # print(dbi_all);
-    print(dbi_items);
+    # print(dbi_items);
     length=len(dbi_items);
     # print(item);
     return render_template('index.html', dbi=dbi_items, wds=wds,length_bike=length)

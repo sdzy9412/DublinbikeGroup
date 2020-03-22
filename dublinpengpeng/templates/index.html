@@ -169,19 +169,31 @@
             var i;
             for (i = 0; i < length; i++) {
               // console.log(station[i][1]);
-               var marker = new google.maps.Marker({
-                      map: map,
-                      position: new google.maps.LatLng(station[i][3], station[i][4])
-                    });
-                map.setCenter(marker.getPosition())
-<!--dynamic infomation of bike-->
+
+              <!--dynamic infomation of bike-->
                 var k = {{dbi}};
+                var url;
                 for (j = 0; j < {{length_bike}}; j++) {
                   if (station[i][0] == k[j][0]){
                   console.log(k[j][0]);
                   var available_bikes = k[j][1];
+                  if(available_bikes <= 3){
+                    url = "http://maps.google.com/mapfiles/ms/icons/red-dot.png";
+                  }else if(available_bikes <= 10){
+                    url = "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png";
+                  }else{
+                    url = "http://maps.google.com/mapfiles/ms/icons/green-dot.png";;
+                    }
                   }
                 }
+               var marker = new google.maps.Marker({
+                      map: map,
+                      position: new google.maps.LatLng(station[i][3], station[i][4]),
+                      icon: {
+                        url: url
+                      }
+                    });
+                map.setCenter(marker.getPosition())
 
                 var weathericon = '{{wds[0]['weatherIcon']}}';
                 // do not need to add the url of static, the image file can be used directly!
