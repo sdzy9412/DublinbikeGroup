@@ -1,0 +1,19 @@
+{% extends "index.html" %}
+
+{% block title %} HomePage {% endblock %}
+
+{% block heading %}
+<center>Homepage</center>
+{% endblock %}
+
+{% block content%}
+<div id="map" class="map-container z-depth-1-half" style="height:400px;"></div>
+  </div>
+  <div class="jumbotron">
+    <p>Please select your start point and end point</p>
+    <div id="pickUpStation"></div>
+    <div id="dropOffStation"></div>
+    <button type="button" onclick="onclickSubmit()">Submit</button>
+    <div id="chart_div"></div>
+  </div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "index.html" %}
+
+{% block title %} Signup {% endblock %}
+
+{% block heading %} Signup {% endblock %}
+
+{% block content %}
+
+{% if message %}
+    {{ message }}
+{% endif %}
+
+{% if form %}
+<form action="{{url_for('signup')}}" method="POST" style="padding:5px;">
+    <!-- Full Name Field -->
+    {{ form.full_name.label }}: <br>
+    {{ form.full_name }}
+    <br>
+    {% if form.full_name.errors %}
+        {% for error in form.full_name.errors %}
+        <b style="color:tomato;"> {{ error }} </b>
+        <br>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Email Field -->
+    {{ form.email.label }}: <br>
+    {{ form.email }}
+    <br>
+    {% if form.email.errors %}
+        {% for error in form.email.errors %}
+        <b style="color:tomato;"> {{ error }} </b>
+        <br>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Password Field -->
+    {{ form.password.label }}: <br>
+    {{ form.password }}
+    <br>
+    {% if form.password.errors %}
+        {% for error in form.password.errors %}
+        <b style="color:tomato;"> {{ error }} </b>
+        <br>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Confirm Password Field -->
+    {{ form.confirm_password.label }}: <br>
+    {{ form.confirm_password }}
+    <br>
+    {% if form.confirm_password.errors %}
+        {% for error in form.confirm_password.errors %}
+        <b style="color:tomato;"> {{ error }} </b>
+        <br>
+        {% endfor %}
+    {% endif %}
+
+    {{ form.csrf_token }}
+    {{ form.submit }}
+</form>
+{% endif %}
+{% endblock %}
