@@ -1,5 +1,4 @@
 function initMap(){
-
     ROOT = window.location.origin;
 
     radius = 20, zoom = 14;

@@ -1,6 +1,6 @@
 // the basic functionality JS code
 function initMap(){
-
+    console.log("here is test flag");
     ROOT = window.location.origin;
 
     radius = 20, zoom = 14;
