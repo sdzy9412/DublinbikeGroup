@@ -16,17 +16,9 @@
 <div id="map" class="map-container z-depth-1-half" style="height:400px;"></div>
   <div class="jumbotron">
     <p>Please select your start point and end point</p>
-    <form method="POST" action="/">
-      <div style="display: inline-block" id="pickUpStation"></div>
-      <input type="date" name="pickdate">
-      <input type="time" name="picktime">
-      <br>
-      <div style="display: inline-block" id="dropOffStation"></div>
-      <input type="date" name="dropdate">
-      <input type="time" name="droptime">
-      <br>
-      <button id="submitStation" type="submit" value="submit" onclick="onclickSubmit()">Submit</button>
-    </form>
+    <div id="pickUpStation"></div>
+    <div id="dropOffStation"></div>
+    <button id="submitStation" type="button" onclick="onclickSubmit()">Submit</button>
     <div id="chart1_div"></div>
     <div id="chart2_div"></div>
     <div id="chart3_div"></div>
