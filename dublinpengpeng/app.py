@@ -66,6 +66,17 @@ class LoginForm(FlaskForm):
 def root():
     return render_template("homepage.html")
 
+@app.route("/", methods=["POST"])
+def send():
+    pick = request.form.get("pick")
+    pickdate = request.form.get("pickdate")
+    picktime = request.form.get("picktime")
+    drop = request.form.get("drop")
+    dropdate = request.form.get("dropdate")
+    droptime = request.form.get("droptime")
+    return render_template("submit.html", pick=pick, drop=drop, pickdate=pickdate, picktime=picktime, dropdate=dropdate, droptime=droptime)
+
+
 @app.route("/signup", methods=["POST", "GET"])
 def signup():
     form = SignUpForm()
@@ -85,7 +96,7 @@ def login():
             return render_template("login.html", form = form, message = "Wrong Credentials. Please Try Again.")
         else:
             session['user'] = user
-            return render_template("login.html", message = "Successfully Logged In!")
+            return render_template("homepagelogin.html")
     return render_template("login.html", form = form)
 
 @app.route("/logout")
@@ -116,16 +127,29 @@ def get_available():
 
     return jsonify(available = available)
 
+
 @app.route("/available/<int:station_id>")
 def get_availableid(station_id):
     engine = get_db()
     availableid = []
-    sql = "SELECT * FROM availability where number = {} order by datetime desc;".format(station_id)
+    sql = "SELECT * FROM availability where number = {};".format(station_id)
     rows = engine.execute(sql)
     for row in rows:
         availableid.append(dict(row))
 
-    return jsonify(availableid = availableid)
+    return jsonify(availableid=availableid)
+
+
+@app.route("/weather")
+def get_weather():
+    engine = get_db()
+    weather = []
+    sql = "SELECT * FROM Weather WHERE dateTime=(SELECT MAX(dateTime) FROM Weather);"
+    rows = engine.execute(sql)
+    for row in rows:
+        weather.append(dict(row))
+
+    return jsonify(weather=weather)
 
 @app.route("/prediction_model", methods=['GET','POST'])
 def prediction_model():
