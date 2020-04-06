@@ -17,12 +17,204 @@ function initMap(){
 
     map = new google.maps.Map(document.getElementById('map'), mapDefault);
 
+    var directionsService = new google.maps.DirectionsService();
+    var directionsRenderer = new google.maps.DirectionsRenderer();
+
+    var heatresult = [];
+    var weight_point;
+
     var bikeLayer = new google.maps.BicyclingLayer();
-    bikeLayer.setMap(map);
-    console.log('map finished');
-	showAllStationMarkers();
-	console.log('start marker section');
-	dropdownStationMenu();
+    var trafficLayer = new google.maps.TrafficLayer();
+    var heatLayer = new google.maps.visualization.HeatmapLayer({
+        data: heatresult,
+        map: map,
+        radius: 15
+    });
+
+    var AllStationMarker = [];
+
+    function setMapOnAll(map) {
+        for (var i = 0; i < AllStationMarker.length; i++) {
+            AllStationMarker[i].setMap(map);
+        }
+    }
+
+    function clearMarkers() {
+        setMapOnAll(null);
+        console.log(AllStationMarker);
+    }
+
+    $('#default-b').click(function(){
+        bikeLayer.setMap(null);
+        trafficLayer.setMap(null);
+        setMapOnAll(map);
+        directionsRenderer.setMap(null);
+    });
+
+    $('#traffic-b').click(function(){
+        bikeLayer.setMap(null);
+        trafficLayer.setMap(map);
+        heatLayer.setMap(null);
+        setMapOnAll(map);
+        directionsRenderer.setMap(null);
+    });
+
+    $('#bike-b').click(function(){
+        bikeLayer.setMap(map);
+        trafficLayer.setMap(null);
+        heatLayer.setMap(null);
+        setMapOnAll(map);
+        directionsRenderer.setMap(null);
+    });
+
+    $('#heat-b').click(function(){
+        bikeLayer.setMap(null);
+        trafficLayer.setMap(null);
+        heatLayer.setMap(map);
+        setMapOnAll(map);
+        directionsRenderer.setMap(null)
+    });
+
+    $('#submitStation').click(function(){
+        if($("#route").is(":checked")){
+            clearMarkers();
+
+            var pickupMarker = document.getElementById("pickUpStation");
+            var dropoffMarker = document.getElementById("dropOffStation");
+            console.log(pickupMarker);
+            var pickupMarkerValue = pickupMarker.options[pickupMarker.selectedIndex].value;
+            var dropoffMarkerValue = dropoffMarker.options[dropoffMarker.selectedIndex].value;
+            $.getJSON("http://localhost:5000/stations", function(data){
+                if("stations" in data){
+                    var stations = data.stations;
+                    var origin, destionation;
+                    _.forEach(stations, function(station){
+                        if(pickupMarkerValue == station.number){
+                            origin = new google.maps.LatLng(parseFloat(station.latitude), parseFloat(station.longitude));
+                        }
+
+                        if(dropoffMarkerValue == station.number){
+                            destionation = new google.maps.LatLng(parseFloat(station.latitude), parseFloat(station.longitude));
+                        }
+                    })
+
+                    var request = {
+                        origin: origin,
+                        destination: destionation,
+                        travelMode: 'BICYCLING'
+                    };
+
+                    directionsService.route(request, function(response, status) {
+                        if (status == 'OK') {
+                        directionsRenderer.setDirections(response);
+                        }
+                    });
+
+                    directionsRenderer.setMap(map);
+
+                }
+
+            });
+        }else{
+            setMapOnAll(map);
+            directionsRenderer.setMap(null);
+        }
+    });
+
+    //$('#default').click(function(){
+    //    showAllStationMarkers();
+    //});
+
+    function showAllStationMarkers(){
+        var url_static = "http://localhost:5000/stations";
+        var url_dynamic = "http://localhost:5000/available";
+        var url_weather = "http://localhost:5000/weather";
+
+        $.when(
+            $.getJSON(url_static),
+            $.getJSON(url_dynamic),
+            $.getJSON(url_weather)
+        ).done(function(data1, data2, data3){
+            var parse1 = data1[0];
+            var parse2 = data2[0];
+            var parse3 = data3[0];
+            //console.log(parse1);
+            //console.log(parse2);
+            if("stations" in parse1 && "available" in parse2 && "weather" in parse3){
+                var stations = parse1.stations;
+                var available = parse2.available;
+                var weather = parse3.weather[0];
+                _.forEach(stations, function(station){
+                    //console.log('station', station.number);
+                    _.forEach(available, function(avail){
+                        //console.log('avail', avail.number);
+                        if(station.number == avail.number){
+                            var available_bikes = avail.available_bikes;
+                            var available_bike_stands = avail.available_bike_stands;
+                            var url;
+                            if(available_bikes <= 3){
+                                url = "http://maps.google.com/mapfiles/ms/icons/red-dot.png";
+                            }else if(available_bikes <= 10){
+                                url = "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png";
+                            }else{
+                                url = "http://maps.google.com/mapfiles/ms/icons/green-dot.png";
+                            }
+
+                            if(available_bike_stands > 25){
+                                weight_point = 1;
+                            }else{
+                                weight_point = 0.2;
+                            }
+
+                            heatresult.push({
+                                location: new google.maps.LatLng(parseFloat(station.latitude), parseFloat(station.longitude)),
+                                weight: weight_point
+                            });
+
+                            var marker = new google.maps.Marker({
+                                map: map,
+                                position:{
+                                    lat:parseFloat(station.latitude),
+                                    lng:parseFloat(station.longitude)
+                                },
+                                icon:{
+                                    url:url
+                                }
+                            });
+
+                            AllStationMarker.push(marker);
+                            console.log(weather.weatherIcon);
+                            var content = "<img src=\"" + weather.weatherIcon + ".png\" style=\"width: 40%\">" + "<p>Bike Station: "+station.name+"</p><p>Available bike stands: "+available_bike_stands+"</p><p>Available bikes: "+available_bikes+"</p>";
+                            var infowindow = new google.maps.InfoWindow({maxWidth: 220});
+                            console.log( weather.temperature);
+                            getElementById("temperature").innerHTML = 999 ;
+
+                            google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){
+                                return function() {
+                                    infowindow.setContent(content);
+                                    infowindow.open(map,marker);
+                                };
+                            })(marker,content,infowindow));
+
+                            google.maps.event.addListener(map, 'click', function () {
+                                infowindow.close();
+                            });
+
+                        }
+                    })
+
+
+                })
+                console.log(AllStationMarker);
+                setMapOnAll(map);
+            }
+        });
+    }
+
+
+    showAllStationMarkers();
+
+    dropdownStationMenu();
 }
 
 function showAllStationMarkers(){
