@@ -76,6 +76,9 @@ def send():
     droptime = request.form.get("droptime")
     return render_template("submit.html", pick=pick, drop=drop, pickdate=pickdate, picktime=picktime, dropdate=dropdate, droptime=droptime)
 
+@app.route("/uitest")
+def ui():
+    return render_template("testui.html")
 
 @app.route("/signup", methods=["POST", "GET"])
 def signup():
