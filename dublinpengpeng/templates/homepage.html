@@ -21,6 +21,9 @@
   <div class="jumbotron">
     <p>Please select your start point and end point</p>
     {% if 'user' in session %}
+    <p>id: {{user_id}}</p>
+    <p>full name: {{user_full_name}}</p>
+    <p>email: {{user_email}}</p>
     <form method="POST" action="/">
       <div style="display: inline-block" id="pickUpStation"></div>
       <input type="date" name="pickdate">

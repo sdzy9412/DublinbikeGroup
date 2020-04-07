@@ -100,7 +100,10 @@ def login():
             return render_template("login.html", form = form, message = "Wrong Credentials. Please Try Again.")
         else:
             session['user'] = user
-            return render_template("homepage.html")
+            user_full_name = user["full_name"]
+            user_id = user["id"]
+            user_email = user["email"]
+            return render_template("homepage.html", user_full_name = user_full_name, user_id = user_id, user_email = user_email)
     return render_template("login.html", form = form)
 
 @app.route("/logout")
