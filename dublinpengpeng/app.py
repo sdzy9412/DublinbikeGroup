@@ -66,7 +66,7 @@ class LoginForm(FlaskForm):
 def root():
     return render_template("homepage.html")
 
-@app.route("/predict", methods=["POST"])
+@app.route("/", methods=["POST"])
 def send():
     pick = request.form.get("pick")
     pickdate = request.form.get("pickdate")
@@ -74,7 +74,8 @@ def send():
     drop = request.form.get("drop")
     dropdate = request.form.get("dropdate")
     droptime = request.form.get("droptime")
-    return render_template("submit.html", pick=pick, drop=drop, pickdate=pickdate, picktime=picktime, dropdate=dropdate, droptime=droptime)
+    return render_template("homepage.html")
+    # return render_template("submit.html", pick=pick, drop=drop, pickdate=pickdate, picktime=picktime, dropdate=dropdate, droptime=droptime)
 
 @app.route("/uitest")
 def ui():
