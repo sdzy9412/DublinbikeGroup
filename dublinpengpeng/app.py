@@ -66,7 +66,7 @@ class LoginForm(FlaskForm):
 def root():
     return render_template("homepage.html")
 
-@app.route("/", methods=["POST"])
+@app.route("/predict", methods=["POST"])
 def send():
     pick = request.form.get("pick")
     pickdate = request.form.get("pickdate")
@@ -96,7 +96,7 @@ def login():
             return render_template("login.html", form = form, message = "Wrong Credentials. Please Try Again.")
         else:
             session['user'] = user
-            return render_template("homepagelogin.html")
+            return render_template("homepage.html")
     return render_template("login.html", form = form)
 
 @app.route("/logout")
