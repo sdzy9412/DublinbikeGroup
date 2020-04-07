@@ -23,7 +23,7 @@
 
     <div>
       <ul style="list-style-type: none;float: right;font-size: large;">
-         <li style="display:inline"><a href="{{url_for('root')}}">Home</a></li>
+         <li style="display:inline"><a href="{{url_for('ui')}}">Home</a></li>
          {% if 'user' in session %}
          <li style="display:inline"><a href="{{url_for('logout')}}">Log Out</a></li>
          {% else %}

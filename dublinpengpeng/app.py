@@ -74,7 +74,8 @@ def send():
     drop = request.form.get("drop")
     dropdate = request.form.get("dropdate")
     droptime = request.form.get("droptime")
-    return render_template("submit.html", pick=pick, drop=drop, pickdate=pickdate, picktime=picktime, dropdate=dropdate, droptime=droptime)
+    return render_template("homepage.html")
+    # return render_template("submit.html", pick=pick, drop=drop, pickdate=pickdate, picktime=picktime, dropdate=dropdate, droptime=droptime)
 
 @app.route("/uitest")
 def ui():
@@ -99,7 +100,7 @@ def login():
             return render_template("login.html", form = form, message = "Wrong Credentials. Please Try Again.")
         else:
             session['user'] = user
-            return render_template("homepagelogin.html")
+            return render_template("homepage.html")
     return render_template("login.html", form = form)
 
 @app.route("/logout")

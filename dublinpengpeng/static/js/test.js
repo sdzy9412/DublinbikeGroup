@@ -46,6 +46,7 @@ function initMap(){
         bikeLayer.setMap(null);
         trafficLayer.setMap(null);
         setMapOnAll(map);
+        heatLayer.setMap(null);
         directionsRenderer.setMap(null);
     });
 
@@ -76,9 +77,11 @@ function initMap(){
     $('#submitStation').click(function(){
         if($("#route").is(":checked")){
             clearMarkers();
-
-            var pickupMarker = document.getElementById("pickUpStation");
-            var dropoffMarker = document.getElementById("dropOffStation");
+            bikeLayer.setMap(null);
+            trafficLayer.setMap(null);
+            heatLayer.setMap(null);
+            var pickupMarker = document.getElementById("pickupstation");
+            var dropoffMarker = document.getElementById("dropoffstation");
             console.log(pickupMarker);
             var pickupMarkerValue = pickupMarker.options[pickupMarker.selectedIndex].value;
             var dropoffMarkerValue = dropoffMarker.options[dropoffMarker.selectedIndex].value;
@@ -450,3 +453,4 @@ function drawWeeklyChartDrop(WeeklyArray) {
 
     chart.draw(data, options);
 }
+
