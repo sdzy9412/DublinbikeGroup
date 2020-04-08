@@ -256,6 +256,8 @@ def prediction_model():
     random_forest_stands = pickle.load(open("final_prediction_bike_stands.pickle", "rb"))
     # post.extend(weatherdatalists)
     result = []
+    resultdic = dict() #用来存放最后的 datetime+ bike/stands的字典
+    timeall=[]
 
     print("post:",post)
 
@@ -295,10 +297,12 @@ def prediction_model():
             print("enter this-2 station:")
             stationNum_start = int(post[0])
             inputtime_start = datetime.strptime(weatherdata[0], '%Y-%m-%d %H:%M:%S')
+            timeall.append(inputtime_start)
             weekday_start = inputtime_start.weekday()
             hour_start = int(inputtime_start.hour)
             stationNum_end = int(post[2])
             inputtime_end = datetime.strptime(weatherdata[4], '%Y-%m-%d %H:%M:%S')
+            timeall.append(inputtime_end)
             weekday_end = inputtime_end.weekday()
             hour_end = int(inputtime_end.hour)
             temp_start = float(weatherdata[1])
@@ -326,6 +330,7 @@ def prediction_model():
             print("enter this-1 station:")
             stationNum = int(post[0])
             inputtime= datetime.strptime(weatherdata[0], '%Y-%m-%d %H:%M:%S')
+            timeall.append(inputtime)
             weekday = inputtime.weekday()
             hour = int(inputtime.hour)
             temp = float(weatherdata[1])
@@ -351,7 +356,13 @@ def prediction_model():
                 available_stands_P = [int(available_stands_P)]
                 result.extend(available_stands_P)
 
-    print("final result--",result)
+    print("所有时间", timeall)
+    print("final result--", result)
+    k = 0
+    for time in timeall:
+        resultdic[time] = result[k]
+        k += 1
+    print(resultdic)
     return render_template("homepage.html", preresult=result)
 
 
