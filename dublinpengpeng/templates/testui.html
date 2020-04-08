@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Dublin Bike</title>
+  <meta content="" name="descriptison">
+  <meta content="" name="keywords">
+
+  <!-- Favicons /the icon shows on the web tag-->
+  <link href="/favicon.png" rel="icon">
+  <link href="/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- CSS Files -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <!--  charge of icons of the home page -->
+  <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
+  <!-- Template Main CSS File -->
+  <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header">
+    <div class="d-flex flex-column">
+      <ul style="list-style-type: none;float: right">
+        {% if 'user' in session %}
+        <li style="float: right;display:inline; margin-right: 5px"><a href="{{url_for('logout')}}"><i class='bx bx-log-out'></i>Log Out</a></li>
+        {% else %}
+      <li style="float: right;display:inline; margin-right: 5px" ><a href="{{url_for('signup')}}"><i class='bx bx-user'></i><span>Sign up</span></a></li>
+      <li style="float: right;display:inline; margin-right: 5px" ><a href="{{url_for('login')}}"><i class='bx bx-log-in'></i><span>Login</span></a></li>
+        {% endif%}
+      </ul>
+
+      <div class="profile">
+        {% if 'user' in session %}
+        <img src="/userIcon.jpeg" alt="" class="img-fluid rounded-circle">
+        <h1 class="text-light" id="profile-username" ><a href="#">{{user_full_name}}</a></h1>
+        {% else %}
+        <img src="/01d.png" alt="" class="img-fluid rounded-circle">
+        <h1 class="text-light" id="profile-username" ><a href="#">Visitor</a></h1>
+        {% endif %}
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <ul>
+          <li class="active"><a href="#"><i class="bx bx-home"></i> <span>Home</span></a></li>
+          <li><a href="#dublinMap"><i class="bx bx-map"></i> <span>Map</span></a></li>
+          <li><a href="#departures"><i class="bx bx-run"></i> <span>Departures</span></a></li>
+          <li><a href="#chart"><i class="bx bx-line-chart"></i> Chart</a></li>
+          <li><a href="#solution"><i class="bx bx-run"></i> Solution</a></li>
+          <li><a href="#contact"><i class="bx bx-run"></i> Tobecontinue2</a></li>
+
+        </ul>
+      </nav><!-- .nav-menu -->
+      <button type="button" class="mobile-nav-toggle d-xl-none"><i class="icofont-navigation-menu"></i></button>
+
+    </div>
+  </header><!-- End Header -->
+
+  <!-- ======= Home Section . main require boostrap======= -->
+  <section id="home" class="d-flex flex-column justify-content-center align-items-center"  style='background: url("/dublinSight.jpg") no-repeat center;  background-size: cover;'>
+    <div class="home-container" data-aos="fade-in">
+      <h1>Dublin Bike</h1>
+      <p>Start your journey. Start your <span class="typed" data-typed-items="day, trip, careers, life"></span></p>
+    </div>
+  </section><!-- End Home -->
+    <main id="main">
+    <!-- ======= Map Section ======= -->
+    <section id="dublinMap" class="doublinMap">
+      <div class="container">
+
+        <div class="section-title">
+          <h2>Dublin Map</h2>
+          <p> Click marker for more info !!map layer needed to be modify!!</p>
+        </div>
+
+	  <div class="portfolio section-bg" style="background: white">
+        <div class="row" data-aos="fade-up">
+          <div class="col-lg-12 d-flex justify-content-center">
+            <ul id="portfolio-flters" style="background:#f5f8fd">
+              <li id="default-b" >Original</li>
+              <li id="traffic-b">Traffic Route</li>
+              <li id="bike-b" >Bike Route</li>
+              <li id="heat-b" >Stands Heat</li>
+            </ul>
+          </div>
+         </div>
+		</div>
+
+		<div id="map" class="map-container z-depth-1-half" style="height:400px;"></div>
+
+      </div>
+    </section><!-- End Map Section -->
+
+    <!-- ======= Weather Section ======= -->
+    <section id="dublinWeather" class="dublinWeather">
+      <div class="container">
+
+        <div class="section-title">
+          <h2>Dublin Weather</h2>
+          <p>Dublin weather info will be shown below.</p>
+        </div>
+
+        <div class="row no-gutters">
+
+          <div class="col-lg-3 col-md-6 d-md-flex align-items-md-stretch" data-aos="fade-up">
+            <div class="count-box">
+              <i class='bx bx-smile'></i>
+              <span id="temp_temp" data-toggle="counter-up"></span>
+              <p><strong>Temperature</strong></p>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6 d-md-flex align-items-md-stretch" data-aos="fade-up" data-aos-delay="100">
+            <div class="count-box">
+			<i class='bx bx-wind'></i>
+              <span id="temp_wind" data-toggle="counter-up"></span>
+              <p><strong>Wind Speed</strong></p>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6 d-md-flex align-items-md-stretch" data-aos="fade-up" data-aos-delay="200">
+            <div class="count-box">
+            <i class='bx bx-water'></i>
+              <span id="temp_humi" data-toggle="counter-up"></span>
+              <p><strong>Humidity</strong></p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section><!-- End Weather Section -->
+
+    <!-- ======= Departures Section ======= -->
+    <section id="departures" class="departures" style="background:#f5f8fd">
+      <div class="container">
+
+        <div class="section-title">
+          <h2>Departure</h2>
+          <p>Please select your start point and end point.</p>
+        </div>
+        {% if 'user' in session %}
+        <form method="POST" action="/">
+        <div style="display: inline-block" id="pickUpStation"></div>
+        <input type="date" name="pickdate">
+        <input type="time" name="picktime">
+        <br>
+        <div style="display: inline-block" id="dropOffStation"></div>
+        <input type="date" name="dropdate">
+        <input type="time" name="droptime">
+        <br>
+        <button type="submit" value="submit">Forecast</button>
+        </form>
+        <button id="submitStation" onclick="onclickSubmit()">Submit</button>
+        {% else %}
+		<div id="pickUpStation" style="float:left; margin-right: 20px"></div>
+        <div id="dropOffStation" style="float:left; margin-right: 20px"></div>
+		<button id="submitStation" onclick="onclickSubmit()">Submit</button>
+        {% endif %}
+      </div>
+    </section><!-- End Departures Section -->
+    <!-- ======= Solution Section ======= -->
+    <section id="solution" class="portfolio section-bg" style="background: white">
+      <div class="container">
+        <div class="section-title">
+          <h2>Solution</h2>
+          {% if 'user' in session %}
+          <p id="solution_content"></p>
+          <div id="solution_map" class="map-container z-depth-1-half" style="float:right;height:400px;width:500px;margin:5px"></div>
+          {% else %}
+          <p id="solution_content"></p>
+          {% endif %}
+        </div>
+      </div>
+    </section><!-- End Departures Section -->
+    <!-- ======= chart Section venobox is been delected ======= -->
+    <section id="chart" class="portfolio section-bg">
+      <div class="container">
+        <div class="section-title">
+          <h2>Charts</h2>
+          <p>This area is to show bikes and stands charts</p>
+        </div>
+            <div id="chart1_div"></div>
+            <div id="chart2_div"></div>
+            <div id="chart3_div"></div>
+            <div id="chart4_div"></div>
+      </div>
+    </section>
+
+
+  </main><!-- End #main -->
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer">
+    <div class="container">
+      <div class="copyright">
+        &copy; Copyright <strong><span>DublinPengPeng</span></strong>
+      </div>
+    </div>
+  </footer><!-- End  Footer -->
+
+  <a href="#" class="back-to-top"><i class='bx bx-chevron-up-circle'></i></a>
+
+  <!-- Template Main JS File -->
+  <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js'></script>
+  <script src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.5/jquery-ui.min.js'></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Counter-Up/1.0.0/jquery.counterup.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.0/jquery.waypoints.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+
+  <script async defer type=text/javascript src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTF-S3Ye0aZdAymDWC-V0zVZVJXywAtgo&callback=initMap"></script>
+
+  <script language="JavaScript" src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBRM6Ek4r2vU_emN068XeioRKoafdhxneM&libraries=visualization&callback=initMap"></script>
+</body>
+
+</html>
