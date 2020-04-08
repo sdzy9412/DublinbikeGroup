@@ -147,7 +147,7 @@ def get_weather():
 
     return jsonify(weather=weather)
 
-@app.route("/", methods=['GET','POST'])
+@app.route("/forcast", methods=['GET','POST'])
 def prediction_model():
     """
     this part is to get the predicted data
@@ -171,8 +171,6 @@ def prediction_model():
     elif picktime != '' and droptime != '':
         print("both 2 stations")
         post = [pick, pickdate + " " + picktime, drop, dropdate + " " + droptime]
-    # post = [14,'2020-04-11 12:13',42,'2020-04-13 02:03']
-    # post = [14,'2020-04-12 12:13']
     print("post1:",post)
 
     def allweatherdata():
@@ -189,7 +187,7 @@ def prediction_model():
             for k in range(6):
                 weatherdatalist = []
                 print(k)
-                inputtime = inputtime + timedelta(hours=k)
+                inputtime = inputtime + timedelta(hours=1)
                 # print("inputtime: ",inputtime)
                 three_hours_from_input = inputtime + timedelta(hours=1.5)
                 three_hours_to_input = inputtime - timedelta(hours=1.5)
@@ -211,8 +209,8 @@ def prediction_model():
             inputtime_end = datetime.strptime(post[3], '%Y-%m-%d %H:%M') - timedelta(hours=3)
             for k in range(6):
                 weatherdatalist = []
-                inputtime_start = inputtime_start+ timedelta(hours=k)
-                inputtime_end = inputtime_end + timedelta(hours=k)
+                inputtime_start = inputtime_start+ timedelta(hours=1)
+                inputtime_end = inputtime_end + timedelta(hours=1)
                 three_hours_from_start = inputtime_start + timedelta(hours=1.5)
                 three_hours_to_start = inputtime_start - timedelta(hours=1.5)
                 three_hours_from_end = inputtime_end + timedelta(hours=1.5)
@@ -250,7 +248,7 @@ def prediction_model():
     random_forest_stands = pickle.load(open("final_prediction_bike_stands.pickle", "rb"))
     # post.extend(weatherdatalists)
     result = []
-    resultdic = dict() #用来存放最后的 datetime+ bike/stands的字典
+    resultlist = [] #用来存放最后的 datetime+ bike/stands的list
     timeall=[]
 
     print("post:",post)
@@ -286,7 +284,7 @@ def prediction_model():
         return (weatherwithweekdy)
     #
     for weatherdata in weatherdatalists:
-        print(weatherdata)
+        # print(weatherdata)
         if(len(weatherdata)==8):#起始站都有
             print("enter this-2 station:")
             stationNum_start = int(post[0])
@@ -297,6 +295,7 @@ def prediction_model():
             stationNum_end = int(post[2])
             inputtime_end = datetime.strptime(weatherdata[4], '%Y-%m-%d %H:%M:%S')
             timeall.append(inputtime_end)
+            # print(timeall)
             weekday_end = inputtime_end.weekday()
             hour_end = int(inputtime_end.hour)
             temp_start = float(weatherdata[1])
@@ -350,14 +349,15 @@ def prediction_model():
                 available_stands_P = [int(available_stands_P)]
                 result.extend(available_stands_P)
 
-    print("所有时间", timeall)
-    print("final result--", result)
-    k = 0
-    for time in timeall:
-        resultdic[time] = result[k]
-        k += 1
-    print(resultdic)
-    return render_template("homepage.html", preresult=resultdic)
+    print("所有时间: ", timeall)
+    print("all bike/stands: ",result)
+    for i in range(len(timeall)):
+        convertedtime = int(datetime.timestamp(timeall[i])*1000)
+        resultlist.append([convertedtime,result[i]])
+
+    print(resultlist)
+
+    return jsonify(preresult=resultlist)
 
 
 
