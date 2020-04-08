@@ -191,8 +191,8 @@ def prediction_model():
         allweather = allweatherdata()
         weatherdatalists = []
         if(len(post)==2):
-            inputtime = datetime.strptime(post[1], '%Y-%m-%d %H:%M') - timedelta(hours=1)
-            for k in range(3):
+            inputtime = datetime.strptime(post[1], '%Y-%m-%d %H:%M') - timedelta(hours=3)
+            for k in range(6):
                 weatherdatalist = []
                 print(k)
                 inputtime = inputtime + timedelta(hours=k)
@@ -212,10 +212,10 @@ def prediction_model():
                 # print("加s:",weatherdatalists)
             return weatherdatalists
         elif(len(post)==4):
-            inputtime_start = datetime.strptime(post[1], '%Y-%m-%d %H:%M') - timedelta(hours=1)
+            inputtime_start = datetime.strptime(post[1], '%Y-%m-%d %H:%M') - timedelta(hours=3)
             print("post[3] is : ",post[3])
-            inputtime_end = datetime.strptime(post[3], '%Y-%m-%d %H:%M') - timedelta(hours=1)
-            for k in range(3):
+            inputtime_end = datetime.strptime(post[3], '%Y-%m-%d %H:%M') - timedelta(hours=3)
+            for k in range(6):
                 weatherdatalist = []
                 inputtime_start = inputtime_start+ timedelta(hours=k)
                 inputtime_end = inputtime_end + timedelta(hours=k)
