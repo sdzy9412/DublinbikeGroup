@@ -66,17 +66,6 @@ class LoginForm(FlaskForm):
 def root():
     return render_template("homepage.html")
 
-# @app.route("/", methods=["POST"])
-# def send():
-#     pick = request.form.get("pick")
-#     pickdate = request.form.get("pickdate")
-#     picktime = request.form.get("picktime")
-#     drop = request.form.get("drop")
-#     dropdate = request.form.get("dropdate")
-#     droptime = request.form.get("droptime")
-#     return render_template("homepage.html")
-#     # return render_template("submit.html", pick=pick, drop=drop, pickdate=pickdate, picktime=picktime, dropdate=dropdate, droptime=droptime)
-
 @app.route("/uitest")
 def ui():
     return render_template("testui.html")
@@ -160,6 +149,11 @@ def get_weather():
 
 @app.route("/", methods=['GET','POST'])
 def prediction_model():
+    """
+    this part is to get the predicted data
+    :return:
+    """
+    #get the data from the front end
     pick = request.form.get("pick")
     pickdate = request.form.get("pickdate")
     picktime = request.form.get("picktime")
@@ -363,7 +357,7 @@ def prediction_model():
         resultdic[time] = result[k]
         k += 1
     print(resultdic)
-    return render_template("homepage.html", preresult=result)
+    return render_template("homepage.html", preresult=resultdic)
 
 
 
