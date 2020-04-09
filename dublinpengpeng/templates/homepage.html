@@ -8,13 +8,13 @@
 
 {% block content%}
 <div>
+  <p>drop: {{ drop }}</p>
   <button id="default-b">Default</button>
   <button id="traffic-b">Traffic</button>
   <button id="bike-b">Bike</button>
   <button id="heat-b">Stands Heat</button>
   {% if 'user' in session %}
   <input type="checkbox" checked id="route">
-
   <label>Route</label>
   {% endif %}
 </div>
@@ -25,7 +25,7 @@
     <p>id: {{user_id}}</p>
     <p>full name: {{user_full_name}}</p>
     <p>email: {{user_email}}</p>
-    <form method="POST" action="/">
+    <form method="POST" action="/forecast">
       <div style="display: inline-block" id="pickUpStation"></div>
       <input type="date" name="pickdate">
       <input type="time" name="picktime">
@@ -42,9 +42,14 @@
     <div id="dropOffStation"></div>
     <button id="submitStation" onclick="onclickSubmit()">Submit</button>
     {% endif %}
-    <div id="chart1_div"></div>
-    <div id="chart2_div"></div>
-    <div id="chart3_div"></div>
-    <div id="chart4_div"></div>
+    <br>
+    <div style="display: inline-block" id="chart1_div"></div>
+    <div style="display: inline-block" id="chart2_div"></div>
+    <br>
+    <div style="display: inline-block" id="chart3_div"></div>
+    <div style="display: inline-block" id="chart4_div"></div>
+    <br>
+    <div style="display: inline-block" id="chart5_div"></div>
+    <div style="display: inline-block" id="chart6_div"></div>
   </div>
 {% endblock %}

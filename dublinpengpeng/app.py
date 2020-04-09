@@ -147,7 +147,7 @@ def get_weather():
 
     return jsonify(weather=weather)
 
-@app.route("/forcast", methods=['GET','POST'])
+@app.route("/forecast", methods=['GET','POST'])
 def prediction_model():
     """
     this part is to get the predicted data
