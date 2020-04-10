@@ -1,3 +1,4 @@
+# coding: utf-8
 '''environment variable setting in terminal:
 
 export FLASK_APP = flaskapp.py
