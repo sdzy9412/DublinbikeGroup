@@ -244,8 +244,8 @@ def prediction_model():
     print("final check weatherdatalists：",weatherdatalists)
 
     #以下第二部分：预测数据
-    random_forest_bikes = pickle.load(open('/Users/jilllilim/New_Dubin_Bike/DublinbikeGroup/dublinpengpeng/final_prediction_bike.pickle', 'rb'))
-    random_forest_stands = pickle.load(open("/Users/jilllilim/New_Dubin_Bike/DublinbikeGroup/dublinpengpeng/final_prediction_bike_stands.pickle", "rb"))
+    random_forest_bikes = pickle.load(open('/final_prediction_bike.pickle', 'rb'))
+    random_forest_stands = pickle.load(open("/final_prediction_bike_stands.pickle", "rb"))
     # post.extend(weatherdatalists)
     result = []
     resultlist = [] #用来存放最后的 datetime+ bike/stands的list

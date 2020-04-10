@@ -64,6 +64,7 @@ function initMap(){
         trafficLayer.setMap(null);
         heatLayer.setMap(null);
         setMapOnAll(map);
+
         directionsRenderer.setMap(null);
     });
 
@@ -75,7 +76,7 @@ function initMap(){
         directionsRenderer.setMap(null)
     });
 
-        /*
+    /*
     $('#forecast_form').submit(function(event){
         console.log("!!!!");
     });
@@ -86,6 +87,8 @@ function initMap(){
     */
     $(document).ready(function(){
         $('form').on('submit',function(event){
+            var predict_pick_array = [];
+            var predict_drop_array = [];
             $.ajax({
                 data:{
                     pick: $('#pickupstation').val(),
@@ -99,7 +102,25 @@ function initMap(){
                 url: '/predict'
             })
             .done(function(data){
-                console.log(data);
+                //console.log(data);
+                if("preresult" in data){
+                    var results = data.preresult;
+                    var results_len = results.length;
+                    for (var i = 0; i < results_len; i++){
+                        if((i % 2) == 0){
+                            predict_date_pick = new Date(results[i][0]);
+                            predict_pick_array.push([predict_date_pick, results[i][1]]);
+                        }else{
+                            predict_date_drop = new Date(results[i][0]);
+                            predict_drop_array.push([predict_date_drop, results[i][1]]);
+                        }
+
+                    }
+                    google.charts.load("current", {packages:['corechart', 'bar']});
+                    google.setOnLoadCallback(function() { drawPredictChartPick(predict_pick_array); });
+                    google.setOnLoadCallback(function() { drawPredictChartDrop(predict_drop_array); });
+
+                }
             });
 
             event.preventDefault();
@@ -670,4 +691,60 @@ function drawAverageChartDrop(AverageArray){
     var chart = new google.visualization.LineChart(document.getElementById('chart6_div'));
 
     chart.draw(data, options);
+}
+
+function drawPredictChartPick(PredictArray) {
+
+    var data = new google.visualization.DataTable();
+    data.addColumn('datetime');
+    data.addColumn('number');
+
+    //console.log(DailyArray);
+    data.addRows(PredictArray);
+
+    var options = {
+        chart: {
+            height: 250,
+            width: 500
+            },
+        vAxis: {
+            viewWindowMode:'explicit',
+            viewWindow: {
+                min:0
+            }
+        },
+        legend: {position: 'none'}
+    };
+
+    var chart = new google.charts.Bar(document.getElementById('chart7_div'));
+
+    chart.draw(data, google.charts.Bar.convertOptions(options));
+}
+
+function drawPredictChartDrop(PredictArray) {
+
+    var data = new google.visualization.DataTable();
+    data.addColumn('datetime');
+    data.addColumn('number');
+
+    //console.log(DailyArray);
+    data.addRows(PredictArray);
+
+    var options = {
+        chart: {
+            height: 250,
+            width: 500
+            },
+        vAxis: {
+            viewWindowMode:'explicit',
+            viewWindow: {
+                min:0
+            }
+        },
+        legend: {position: 'none'}
+    };
+
+    var chart = new google.charts.Bar(document.getElementById('chart8_div'));
+
+    chart.draw(data, google.charts.Bar.convertOptions(options));
 }
