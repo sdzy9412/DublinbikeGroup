@@ -8,7 +8,7 @@
 
 {% block content%}
 <div>
-  <p>drop: {{ drop }}</p>
+  <p>drop: {{ preresult }}</p>
   <button id="default-b">Default</button>
   <button id="traffic-b">Traffic</button>
   <button id="bike-b">Bike</button>
@@ -25,16 +25,15 @@
     <p>id: {{user_id}}</p>
     <p>full name: {{user_full_name}}</p>
     <p>email: {{user_email}}</p>
-    <form method="POST" action="/forecast">
+    <form id="forecast_form">
       <div style="display: inline-block" id="pickUpStation"></div>
-      <input type="date" name="pickdate">
-      <input type="time" name="picktime">
+      <input type="date" id="pickdate">
+      <input type="time" id="picktime">
       <br>
       <div style="display: inline-block" id="dropOffStation"></div>
-      <input type="date" name="dropdate">
-      <input type="time" name="droptime">
-      <br>
-      <button type="submit" value="submit">Forecast</button>
+      <input type="date" id="dropdate">
+      <input type="time" id="droptime">
+      <button type="submit" id="forecast">Forecast</button>
     </form>
     <button id="submitStation" onclick="onclickSubmit()">Submit</button>
     {% else %}

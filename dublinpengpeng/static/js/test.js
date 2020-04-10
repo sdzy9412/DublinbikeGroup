@@ -75,6 +75,37 @@ function initMap(){
         directionsRenderer.setMap(null)
     });
 
+        /*
+    $('#forecast_form').submit(function(event){
+        console.log("!!!!");
+    });
+
+    $('#forecast').click(function(){
+        $('#forecast_form').submit();
+    });
+    */
+    $(document).ready(function(){
+        $('form').on('submit',function(event){
+            $.ajax({
+                data:{
+                    pick: $('#pickupstation').val(),
+                    pickdate: $('#pickdate').val(),
+                    picktime: $('#picktime').val(),
+                    drop: $('#dropoffstation').val(),
+                    dropdate: $('#dropdate').val(),
+                    droptime: $('#droptime').val()
+                },
+                type: "POST",
+                url: '/predict'
+            })
+            .done(function(data){
+                console.log(data);
+            });
+
+            event.preventDefault();
+        });
+    });
+
     $('#submitStation').click(function(){
         if($("#route").is(":checked")){
             clearMarkers();
