@@ -15,6 +15,11 @@ from _datetime import datetime, timedelta
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Email, EqualTo
+import os
+
+# print(os.path.abspath("dublinpengpeng/final_prediction_bike.pickle"))
+# print(os.path.abspath("dublinpengpeng/final_prediction_bike_stands.pickle"))
+
 import sklearn
 app = Flask(__name__,static_url_path='')
 app.config['SECRET_KEY'] = 'dfewfew123213rwdsgert34tgfd1234trgf'
@@ -245,8 +250,8 @@ def prediction_model():
     print("final check weatherdatalists：",weatherdatalists)
 
     #以下第二部分：预测数据
-    random_forest_bikes = pickle.load(open('/final_prediction_bike.pickle', 'rb'))
-    random_forest_stands = pickle.load(open("/final_prediction_bike_stands.pickle", "rb"))
+    random_forest_bikes = pickle.load(open(os.path.abspath("dublinpengpeng/final_prediction_bike.pickle"), 'rb'))
+    random_forest_stands = pickle.load(open(os.path.abspath("dublinpengpeng/final_prediction_bike_stands.pickle"), "rb"))
     # post.extend(weatherdatalists)
     result = []
     resultlist = [] #用来存放最后的 datetime+ bike/stands的list
