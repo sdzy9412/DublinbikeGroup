@@ -1,5 +1,4 @@
 function initMap(){
-
     ROOT = window.location.origin;
 
     radius = 20, zoom = 14;
@@ -78,7 +77,7 @@ function initMap(){
 
     /*
     $('#forecast_form').submit(function(event){
-        console.log("!!!!");
+        console.log("successfully submit");
     });
 
     $('#forecast').click(function(){
@@ -102,7 +101,6 @@ function initMap(){
                 url: '/predict'
             })
             .done(function(data){
-                //console.log(data);
                 if("preresult" in data){
                     var results = data.preresult;
                     var results_len = results.length;
@@ -117,8 +115,8 @@ function initMap(){
 
                     }
                     google.charts.load("current", {packages:['corechart', 'bar']});
-                    google.setOnLoadCallback(function() { drawPredictChartPick(predict_pick_array); });
-                    google.setOnLoadCallback(function() { drawPredictChartDrop(predict_drop_array); });
+                    google.setOnLoadCallback(function() { drawPredictChart(predict_pick_array, 'chart7_div'); });
+                    google.setOnLoadCallback(function() { drawPredictChart(predict_drop_array, 'chart8_div'); });
 
                 }
             });
@@ -271,6 +269,8 @@ function initMap(){
     showAllStationMarkers();
 
     dropdownStationMenu();
+
+    setDatetimeLimit();
 }
 
 
@@ -455,14 +455,14 @@ function onclickSubmit(){
             ];
 
             google.charts.load("current", {packages:['corechart', 'bar']});
-            google.setOnLoadCallback(function() { drawDailyChartPick(DailyArraypick); });
-            google.setOnLoadCallback(function() { drawDailyChartDrop(DailyArraydrop); });
+            google.setOnLoadCallback(function() { drawDailyChart(DailyArraypick, 'chart1_div'); });
+            google.setOnLoadCallback(function() { drawDailyChart(DailyArraydrop, 'chart2_div'); });
 
             google.charts.load("current", {packages:['corechart']});
-            google.setOnLoadCallback(function() { drawWeeklyChartPick(WeeklyArraypick); });
-            google.setOnLoadCallback(function() { drawWeeklyChartDrop(WeeklyArraydrop); });
-            google.setOnLoadCallback(function() { drawAverageChartPick(AverageArraypick); });
-            google.setOnLoadCallback(function() { drawAverageChartDrop(AverageArraydrop); });
+            google.setOnLoadCallback(function() { drawWeeklyChart(WeeklyArraypick, 'chart3_div'); });
+            google.setOnLoadCallback(function() { drawWeeklyChart(WeeklyArraydrop, 'chart4_div'); });
+            google.setOnLoadCallback(function() { drawAverageChart(AverageArraypick, 'chart5_div'); });
+            google.setOnLoadCallback(function() { drawAverageChart(AverageArraydrop, 'chart6_div'); });
         }
     });
 }
@@ -520,13 +520,12 @@ function monthStringToInt(string){
 }
 
 
-function drawDailyChartPick(DailyArray) {
+function drawDailyChart(DailyArray, div_place) {
 
     var data = new google.visualization.DataTable();
     data.addColumn('datetime');
     data.addColumn('number');
 
-    //console.log(DailyArray);
     data.addRows(DailyArray);
 
     var options = {
@@ -543,48 +542,18 @@ function drawDailyChartPick(DailyArray) {
         legend: {position: 'none'}
     };
 
-    var chart = new google.charts.Bar(document.getElementById('chart1_div'));
+    var chart = new google.charts.Bar(document.getElementById(div_place));
 
     chart.draw(data, google.charts.Bar.convertOptions(options));
 }
 
 
-
-function drawDailyChartDrop(DailyArray) {
-
-    var data = new google.visualization.DataTable();
-    data.addColumn('datetime');
-    data.addColumn('number');
-
-    //console.log(DailyArray);
-    data.addRows(DailyArray);
-
-    var options = {
-        chart: {
-            height: 250,
-            width: 500
-            },
-        vAxis: {
-            viewWindowMode:'explicit',
-            viewWindow: {
-                min:0
-            }
-        },
-        legend: {position: 'none'}
-    };
-
-    var chart = new google.charts.Bar(document.getElementById('chart2_div'));
-
-    chart.draw(data, google.charts.Bar.convertOptions(options));
-}
-
-function drawWeeklyChartPick(WeeklyArray) {
+function drawWeeklyChart(WeeklyArray, div_place) {
 
     var data = new google.visualization.DataTable();
     data.addColumn('datetime');
     data.addColumn('number');
 
-    //console.log(DailyArray);
     data.addRows(WeeklyArray);
 
     var options = {
@@ -601,70 +570,13 @@ function drawWeeklyChartPick(WeeklyArray) {
         legend: {position: 'none'}
     };
 
-    var chart = new google.visualization.LineChart(document.getElementById('chart3_div'));
+    var chart = new google.visualization.LineChart(document.getElementById(div_place));
 
     chart.draw(data, options);
 }
 
-function drawWeeklyChartDrop(WeeklyArray) {
 
-    var data = new google.visualization.DataTable();
-    data.addColumn('datetime');
-    data.addColumn('number');
-
-    //console.log(DailyArray);
-    data.addRows(WeeklyArray);
-
-    var options = {
-        chart: {
-            height: 250,
-            width: 500
-            },
-        vAxis: {
-            viewWindowMode:'explicit',
-            viewWindow: {
-                min:0
-            }
-        },
-        legend: {position: 'none'}
-    };
-
-    var chart = new google.visualization.LineChart(document.getElementById('chart4_div'));
-
-    chart.draw(data, options);
-}
-
-function drawAverageChartPick(AverageArray){
-
-    var data = new google.visualization.DataTable();
-    data.addColumn('string');
-    data.addColumn('number');
-
-    //console.log(DailyArray);
-    data.addRows(AverageArray);
-
-    console.log(data);
-
-    var options = {
-        chart: {
-            height: 250,
-            width: 500
-            },
-        vAxis: {
-            viewWindowMode:'explicit',
-            viewWindow: {
-                min:0
-            }
-        },
-        legend: {position: 'none'}
-    };
-
-    var chart = new google.visualization.LineChart(document.getElementById('chart5_div'));
-
-    chart.draw(data, options);
-}
-
-function drawAverageChartDrop(AverageArray){
+function drawAverageChart(AverageArray, div_place){
 
     var data = new google.visualization.DataTable();
     data.addColumn('string');
@@ -672,8 +584,6 @@ function drawAverageChartDrop(AverageArray){
 
     data.addRows(AverageArray);
 
-    console.log(data);
-
     var options = {
         chart: {
             height: 250,
@@ -688,18 +598,17 @@ function drawAverageChartDrop(AverageArray){
         legend: {position: 'none'}
     };
 
-    var chart = new google.visualization.LineChart(document.getElementById('chart6_div'));
+    var chart = new google.visualization.LineChart(document.getElementById(div_place));
 
     chart.draw(data, options);
 }
 
-function drawPredictChartPick(PredictArray) {
+function drawPredictChart(PredictArray, div_place) {
 
     var data = new google.visualization.DataTable();
     data.addColumn('datetime');
     data.addColumn('number');
 
-    //console.log(DailyArray);
     data.addRows(PredictArray);
 
     var options = {
@@ -716,35 +625,26 @@ function drawPredictChartPick(PredictArray) {
         legend: {position: 'none'}
     };
 
-    var chart = new google.charts.Bar(document.getElementById('chart7_div'));
+    var chart = new google.charts.Bar(document.getElementById(div_place));
 
     chart.draw(data, google.charts.Bar.convertOptions(options));
 }
 
-function drawPredictChartDrop(PredictArray) {
 
-    var data = new google.visualization.DataTable();
-    data.addColumn('datetime');
-    data.addColumn('number');
+function setDatetimeLimit(){
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; //January is 0!
+    var yyyy = today.getFullYear();
+    if(dd<10){
+            dd='0'+dd
+        } 
+    if(mm<10){
+        mm='0'+mm
+    } 
 
-    //console.log(DailyArray);
-    data.addRows(PredictArray);
-
-    var options = {
-        chart: {
-            height: 250,
-            width: 500
-            },
-        vAxis: {
-            viewWindowMode:'explicit',
-            viewWindow: {
-                min:0
-            }
-        },
-        legend: {position: 'none'}
-    };
-
-    var chart = new google.charts.Bar(document.getElementById('chart8_div'));
-
-    chart.draw(data, google.charts.Bar.convertOptions(options));
+    maxdd = dd + 5;
+    max_date = today = yyyy+'-'+mm+'-'+maxdd;
+    document.getElementById("pickdate").setAttribute("max", max_date);
+    document.getElementById("dropdate").setAttribute("max", max_date);
 }
