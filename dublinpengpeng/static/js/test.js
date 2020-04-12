@@ -1,4 +1,5 @@
 function initMap(){
+    //callback function of google map API
     ROOT = window.location.origin;
 
     radius = 20, zoom = 14;
@@ -7,6 +8,7 @@ function initMap(){
       lng:-6.2568436
     };
 
+    //Set default map options
     var mapDefault = {
         center: dublin_downtown,
         zoom: 13,
@@ -15,6 +17,7 @@ function initMap(){
 
     map = new google.maps.Map(document.getElementById('map'), mapDefault);
 
+    //Initialize google map services, layers and markers variables
     var directionsService = new google.maps.DirectionsService();
     var directionsRenderer = new google.maps.DirectionsRenderer();
 
@@ -29,6 +32,7 @@ function initMap(){
         radius: 15
     });
 
+    //Set station markers as global variables
     var AllStationMarker = [];
 
     function setMapOnAll(map) {
@@ -63,7 +67,6 @@ function initMap(){
         trafficLayer.setMap(null);
         heatLayer.setMap(null);
         setMapOnAll(map);
-
         directionsRenderer.setMap(null);
     });
 

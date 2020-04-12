@@ -1,5 +1,6 @@
 // the basic functionality JS code
 function initMap(){
+    //callback function of google map API
     ROOT = window.location.origin;
 
     radius = 20, zoom = 14;
@@ -8,6 +9,7 @@ function initMap(){
       lng:-6.2568436
     };
 
+    //Set default map options
     var mapDefault = {
         center: dublin_downtown,
         zoom: 13,
@@ -15,6 +17,8 @@ function initMap(){
     };
 
     map = new google.maps.Map(document.getElementById('map'), mapDefault);
+
+    //Initialize google map services, layers and markers variables
     var directionsService = new google.maps.DirectionsService();
     var directionsRenderer = new google.maps.DirectionsRenderer();
 
@@ -29,6 +33,7 @@ function initMap(){
         radius: 15
     });
 
+    //Set station markers as global variables
     var AllStationMarker = [];
 
     function setMapOnAll(map) {
@@ -74,6 +79,59 @@ function initMap(){
         directionsRenderer.setMap(null)
     });
 
+    /*
+    $('#forecast_form').submit(function(event){
+        console.log("successfully submit");
+    });
+
+    $('#forecast').click(function(){
+        $('#forecast_form').submit();
+    });
+    */
+
+    //ajax function to submit prediction form
+    $(document).ready(function(){
+        $('form').on('submit',function(event){
+            var predict_pick_array = [];
+            var predict_drop_array = [];
+            $.ajax({
+                data:{
+                    pick: $('#pickupstation').val(),
+                    pickdate: $('#pickdate').val(),
+                    picktime: $('#picktime').val(),
+                    drop: $('#dropoffstation').val(),
+                    dropdate: $('#dropdate').val(),
+                    droptime: $('#droptime').val()
+                },
+                type: "POST",
+                url: '/predict'
+            })
+            .done(function(data){
+                if("preresult" in data){
+                    var results = data.preresult;
+                    var pick_results = results[0];
+                    var drop_results = results[1];
+                    _.forEach(pick_results, function(pick_result){
+                        predict_pick_array.push([new Date(pick_result[0]), pick_result[1]]);
+                    })
+
+                    _.forEach(drop_results, function(drop_result){
+                        predict_drop_array.push([new Date(drop_result[0]), drop_result[1]]);
+                    })
+
+                    google.charts.load("current", {packages:['corechart', 'bar']});
+                    google.setOnLoadCallback(function() { drawPredictChart(predict_pick_array, 'chart7_div'); });
+                    google.setOnLoadCallback(function() { drawPredictChart(predict_drop_array, 'chart8_div'); });
+
+                }
+            });
+
+            event.preventDefault();
+        });
+    });
+
+
+    //remain as main.js
     $('#submitStation').click(function(){
             clearMarkers();
             bikeLayer.setMap(null);
@@ -81,7 +139,7 @@ function initMap(){
             heatLayer.setMap(null);
             var pickupMarker = document.getElementById("pickupstation");
             var dropoffMarker = document.getElementById("dropoffstation");
-            console.log(pickupMarker);
+            //console.log(pickupMarker);
             var pickupMarkerValue = pickupMarker.options[pickupMarker.selectedIndex].value;
             var dropoffMarkerValue = dropoffMarker.options[dropoffMarker.selectedIndex].value;
             $.getJSON("/stations", function(data){
@@ -211,7 +269,7 @@ function initMap(){
 
 
                 })
-                console.log(AllStationMarker);
+                //console.log(AllStationMarker);
                 setMapOnAll(map);
             }
         });
@@ -221,14 +279,16 @@ function initMap(){
     showAllStationMarkers();
 
     dropdownStationMenu();
+
+    setDatetimeLimit();
 }
 
 
 function dropdownStationMenu(){
-    var selectPickUpStation = "<select id=pickupstation>";
-    var selectDropOffStation = "<select id=dropoffstation>";
-    selectPickUpStation += "<option value=" + 'selStation' + ">" + 'Select Pick Up Station:' + "</option>"
-    selectDropOffStation += "<option value=" + 'selStation' + ">" + 'Select Drop Off Station:' + "</option>"
+    var selectPickUpStation = "<select id='pickupstation' name ='pick'>";
+    var selectDropOffStation = "<select id='dropoffstation' name ='drop'>";
+    selectPickUpStation += "<option value=" + '0' + ">" + 'Select Pick Up Station:' + "</option>"
+    selectDropOffStation += "<option value=" + '0' + ">" + 'Select Drop Off Station:' + "</option>"
     $.getJSON("/stations", function(data){
         if("stations" in data){
             var stations = data.stations;
@@ -247,7 +307,7 @@ function dropdownStationMenu(){
 
 function onclickSubmit(){
     var currentDate = new Date();
-    var currentTimestamp = currentDate.getTime()/1000;
+    var currentTimestamp = currentDate.getTime();
     //console.log(currentTimestamp);
     var pickup = document.getElementById("pickupstation");
     var pickupValue = pickup.options[pickup.selectedIndex].value;
@@ -273,6 +333,9 @@ function onclickSubmit(){
             var DailyArraydrop = [];
             var WeeklyArraypick = [];
             var WeeklyArraydrop = [];
+            var AverageArraypick = [];
+            var AverageArraydrop = [];
+            var total_0 = count_0 = total_1 = count_1 = total_2 = count_2 = total_3 = count_3 = total_4 = count_4 = total_5 = count_5 = total_6 = count_6 = 0;
             _.forEach(pickupInfo, function(pickupInfoElem){
                 var dateRegexp = /(?<day>[0-9]{2})-(?<month>[a-zA-Z]{3})-(?<year>[0-9]{4})/;
                 var timeRegexp = /(?<hour>[0-9]{2}):(?<minute>[0-9]{2}):(?<second>[0-9]{2})/;
@@ -284,15 +347,58 @@ function onclickSubmit(){
 
                 TimestampElem = toTimestamp(pickupdate.year, IntMonth, pickupdate.day, pickuptime.hour, pickuptime.minute, pickuptime.second);
                 //console.log(TimestampElem);
-                if((currentTimestamp - TimestampElem)<86400){
+                if((currentTimestamp - TimestampElem)<86400000){
                     DailyArraypick.push([new Date(parseInt(pickupdate.year), parseInt(IntMonth)-1, parseInt(pickupdate.day), parseInt(pickuptime.hour), parseInt(pickuptime.minute), parseInt(pickuptime.second)),pickupInfoElem.available_bikes])
                 }
 
-                if((currentTimestamp - TimestampElem)<604800){
+                if((currentTimestamp - TimestampElem)<604800000){
                     WeeklyArraypick.push([new Date(parseInt(pickupdate.year), parseInt(IntMonth)-1, parseInt(pickupdate.day), parseInt(pickuptime.hour), parseInt(pickuptime.minute), parseInt(pickuptime.second)),pickupInfoElem.available_bike_stands])
                 }
 
+                switch (new Date(parseInt(pickupdate.year), parseInt(IntMonth)-1, parseInt(pickupdate.day), parseInt(pickuptime.hour), parseInt(pickuptime.minute), parseInt(pickuptime.second)).getDay()) {
+                    case 0:
+                      total_0 += pickupInfoElem.available_bikes;
+                      count_0 += 1;
+                      console.log(total_0);
+                      break;
+                    case 1:
+                      total_1 += pickupInfoElem.available_bikes;
+                      count_1 += 1;
+                      break;
+                    case 2:
+                      total_2 += pickupInfoElem.available_bikes;
+                      count_2 += 1;
+                      break;
+                    case 3:
+                      total_3 += pickupInfoElem.available_bikes;
+                      count_3 += 1;
+                      break;
+                    case 4:
+                      total_4 += pickupInfoElem.available_bikes;
+                      count_4 += 1;
+                      break;
+                    case 5:
+                      total_5 += pickupInfoElem.available_bikes;
+                      count_5 += 1;
+                      break;
+                    case 6:
+                      total_6 += pickupInfoElem.available_bikes;
+                      count_6 += 1;
+                  }
+
             })
+
+            AverageArraypick = [
+                ["Mon", total_1/count_1],
+                ["Tue", total_2/count_2],
+                ["Wed", total_3/count_3],
+                ["Thu", total_4/count_4],
+                ["Fri", total_5/count_5],
+                ["Sat", total_6/count_6],
+                ["Sun", total_0/count_0]
+            ];
+
+            console.log(AverageArraypick);
 
             _.forEach(dropoffInfo, function(dropoffInfoElem){
                 var dateRegexp = /(?<day>[0-9]{2})-(?<month>[a-zA-Z]{3})-(?<year>[0-9]{4})/;
@@ -305,23 +411,67 @@ function onclickSubmit(){
 
                 TimestampElem = toTimestamp(dropoffdate.year, IntMonth, dropoffdate.day, dropofftime.hour, dropofftime.minute, dropofftime.second);
                 //console.log(TimestampElem);
-                if((currentTimestamp - TimestampElem)<86400){
+                if((currentTimestamp - TimestampElem)<86400000){
                     DailyArraydrop.push([new Date(parseInt(dropoffdate.year), parseInt(IntMonth)-1, parseInt(dropoffdate.day), parseInt(dropofftime.hour), parseInt(dropofftime.minute), parseInt(dropofftime.second)),dropoffInfoElem.available_bike_stands])
                 }
 
-                if((currentTimestamp - TimestampElem)<604800){
+                if((currentTimestamp - TimestampElem)<604800000){
                     WeeklyArraydrop.push([new Date(parseInt(dropoffdate.year), parseInt(IntMonth)-1, parseInt(dropoffdate.day), parseInt(dropofftime.hour), parseInt(dropofftime.minute), parseInt(dropofftime.second)),dropoffInfoElem.available_bike_stands])
                 }
 
+                switch (new Date(parseInt(dropoffdate.year), parseInt(IntMonth)-1, parseInt(dropoffdate.day), parseInt(dropofftime.hour), parseInt(dropofftime.minute), parseInt(dropofftime.second)).getDay()) {
+                    case 0:
+                      total_0 += dropoffInfoElem.available_bike_stands;
+                      count_0 += 1;
+                      console.log(total_0);
+                      break;
+                    case 1:
+                      total_1 += dropoffInfoElem.available_bike_stands;
+                      count_1 += 1;
+                      break;
+                    case 2:
+                      total_2 += dropoffInfoElem.available_bike_stands;
+                      count_2 += 1;
+                      break;
+                    case 3:
+                      total_3 += dropoffInfoElem.available_bike_stands;
+                      count_3 += 1;
+                      break;
+                    case 4:
+                      total_4 += dropoffInfoElem.available_bike_stands;
+                      count_4 += 1;
+                      break;
+                    case 5:
+                      total_5 += dropoffInfoElem.available_bike_stands;
+                      count_5 += 1;
+                      break;
+                    case 6:
+                      total_6 += dropoffInfoElem.available_bike_stands;
+                      count_6 += 1;
+                  }
+
+
             })
 
+            AverageArraydrop = [
+                ["Mon", total_1/count_1],
+                ["Tue", total_2/count_2],
+                ["Wed", total_3/count_3],
+                ["Thu", total_4/count_4],
+                ["Fri", total_5/count_5],
+                ["Sat", total_6/count_6],
+                ["Sun", total_0/count_0]
+            ];
+
             google.charts.load("current", {packages:['corechart', 'bar']});
-            google.setOnLoadCallback(function() { drawDailyChartPick(DailyArraypick); });
-            google.setOnLoadCallback(function() { drawDailyChartDrop(DailyArraydrop); });
+            google.setOnLoadCallback(function() { drawDailyChart(DailyArraypick, 'chart1_div'); });
+            google.setOnLoadCallback(function() { drawDailyChart(DailyArraydrop, 'chart2_div'); });
 
             google.charts.load("current", {packages:['corechart']});
-            google.setOnLoadCallback(function() { drawWeeklyChartPick(WeeklyArraypick); });
-            google.setOnLoadCallback(function() { drawWeeklyChartDrop(WeeklyArraydrop); });
+            google.setOnLoadCallback(function() { drawWeeklyChart(WeeklyArraypick, 'chart3_div'); });
+            google.setOnLoadCallback(function() { drawWeeklyChart(WeeklyArraydrop, 'chart4_div'); });
+            google.setOnLoadCallback(function() { drawAverageChart(AverageArraypick, 'chart5_div'); });
+            google.setOnLoadCallback(function() { drawAverageChart(AverageArraydrop, 'chart6_div'); });
         }
     });
 }
@@ -331,7 +481,7 @@ function toTimestamp(year,month,day,hour,minute,second){
     // One day 86400 seconds.
     // One week 604800 seconds.
     var Timestamp = new Date(Date.UTC(year,month-1,day,hour,minute,second));
-    return Timestamp.getTime()/1000;
+    return Timestamp.getTime()
 }
 
 function monthStringToInt(string){
@@ -378,83 +528,135 @@ function monthStringToInt(string){
     return num;
 }
 
-function drawDailyChartPick(DailyArray) {
+function drawDailyChart(DailyArray, div_place) {
 
     var data = new google.visualization.DataTable();
-    data.addColumn('datetime', 'Time of Day');
-    data.addColumn('number', 'available bikes');
+    data.addColumn('datetime');
+    data.addColumn('number');
 
-    //console.log(DailyArray);
     data.addRows(DailyArray);
 
     var options = {
-      title: 'Total Available Bikes Throughout the Day',
-      height: 450
+        chart: {
+            height: 250,
+            width: 500
+            },
+        vAxis: {
+            viewWindowMode:'explicit',
+            viewWindow: {
+                min:0
+            }
+        },
+        legend: {position: 'none'}
     };
 
-    var chart = new google.charts.Bar(document.getElementById('chart1_div'));
+    var chart = new google.charts.Bar(document.getElementById(div_place));
 
     chart.draw(data, google.charts.Bar.convertOptions(options));
 }
 
-function drawDailyChartDrop(DailyArray) {
+
+function drawWeeklyChart(WeeklyArray, div_place) {
 
     var data = new google.visualization.DataTable();
-    data.addColumn('datetime', 'Time of Day');
-    data.addColumn('number', 'available bikes');
+    data.addColumn('datetime');
+    data.addColumn('number');
 
-    //console.log(DailyArray);
-    data.addRows(DailyArray);
+    data.addRows(WeeklyArray);
 
     var options = {
-      title: 'Total Available Bike Stands Throughout the Day',
-      height: 450
+        chart: {
+            height: 250,
+            width: 500
+            },
+        vAxis: {
+            viewWindowMode:'explicit',
+            viewWindow: {
+                min:0
+            }
+        },
+        legend: {position: 'none'}
     };
 
-    var chart = new google.charts.Bar(document.getElementById('chart2_div'));
+    var chart = new google.visualization.LineChart(document.getElementById(div_place));
+
+    chart.draw(data, options);
+}
+
+
+function drawAverageChart(AverageArray, div_place){
+
+    var data = new google.visualization.DataTable();
+    data.addColumn('string');
+    data.addColumn('number');
+
+    data.addRows(AverageArray);
+
+    var options = {
+        chart: {
+            height: 250,
+            width: 500
+            },
+        vAxis: {
+            viewWindowMode:'explicit',
+            viewWindow: {
+                min:0
+            }
+        },
+        legend: {position: 'none'}
+    };
+
+    var chart = new google.visualization.LineChart(document.getElementById(div_place));
+
+    chart.draw(data, options);
+}
+
+function drawPredictChart(PredictArray, div_place) {
+
+    var data = new google.visualization.DataTable();
+    data.addColumn('datetime');
+    data.addColumn('number');
+
+    data.addRows(PredictArray);
+
+    var options = {
+        chart: {
+            height: 250,
+            width: 500
+            },
+        vAxis: {
+            viewWindowMode:'explicit',
+            viewWindow: {
+                min:0
+            }
+        },
+        legend: {position: 'none'}
+    };
+
+    var chart = new google.charts.Bar(document.getElementById(div_place));
 
     chart.draw(data, google.charts.Bar.convertOptions(options));
 }
 
-function drawWeeklyChartPick(WeeklyArray) {
 
-    var data = new google.visualization.DataTable();
-    data.addColumn('datetime', 'Time of Week');
-    data.addColumn('number', 'available bikes');
+function setDatetimeLimit(){
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; //January is 0!
+    var yyyy = today.getFullYear();
+    if(dd<10){
+            dd='0'+dd
+        }
+    if(mm<10){
+        mm='0'+mm
+    }
 
-    //console.log(DailyArray);
-    data.addRows(WeeklyArray);
-
-    console.log(data);
-
-    var options = {
-      title: 'Total Available Bikes Throughout the Week',
-      height: 450
-    };
-
-    var chart = new google.visualization.LineChart(document.getElementById('chart3_div'));
-
-    chart.draw(data, options);
+    maxdd = dd + 5;
+    max_date = today = yyyy+'-'+mm+'-'+maxdd;
+    document.getElementById("pickdate").setAttribute("max", max_date);
+    document.getElementById("dropdate").setAttribute("max", max_date);
 }
 
-function drawWeeklyChartDrop(WeeklyArray) {
-
-    var data = new google.visualization.DataTable();
-    data.addColumn('datetime', 'Time of Week');
-    data.addColumn('number', 'available bike stands');
-
-    //console.log(DailyArray);
-    data.addRows(WeeklyArray);
-
-    var options = {
-      title: 'Total Available Bike Stands Throughout the Week',
-      height: 450
-    };
-
-    var chart = new google.visualization.LineChart(document.getElementById('chart4_div'));
-
-    chart.draw(data, options);
-}
 
 
 // the front-end UI JS code
