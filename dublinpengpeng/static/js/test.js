@@ -103,17 +103,16 @@ function initMap(){
             .done(function(data){
                 if("preresult" in data){
                     var results = data.preresult;
-                    var results_len = results.length;
-                    for (var i = 0; i < results_len; i++){
-                        if((i % 2) == 0){
-                            predict_date_pick = new Date(results[i][0]);
-                            predict_pick_array.push([predict_date_pick, results[i][1]]);
-                        }else{
-                            predict_date_drop = new Date(results[i][0]);
-                            predict_drop_array.push([predict_date_drop, results[i][1]]);
-                        }
+                    var pick_results = results[0];
+                    var drop_results = results[1];
+                    _.forEach(pick_results, function(pick_result){
+                        predict_pick_array.push([new Date(pick_result[0]), pick_result[1]]);
+                    })
 
-                    }
+                    _.forEach(drop_results, function(drop_result){
+                        predict_drop_array.push([new Date(drop_result[0]), drop_result[1]]);
+                    })
+
                     google.charts.load("current", {packages:['corechart', 'bar']});
                     google.setOnLoadCallback(function() { drawPredictChart(predict_pick_array, 'chart7_div'); });
                     google.setOnLoadCallback(function() { drawPredictChart(predict_drop_array, 'chart8_div'); });
@@ -181,9 +180,9 @@ function initMap(){
     //});
 
     function showAllStationMarkers(){
-        var url_static = "http://localhost:5000/stations";
-        var url_dynamic = "http://localhost:5000/available";
-        var url_weather = "http://localhost:5000/weather";
+        var url_static = "/stations";
+        var url_dynamic = "/available";
+        var url_weather = "/weather";
 
         $.when(
             $.getJSON(url_static),
@@ -280,7 +279,7 @@ function dropdownStationMenu(){
     var selectDropOffStation = "<select id='dropoffstation' name ='drop'>";
     selectPickUpStation += "<option value=" + '0' + ">" + 'Select Pick Up Station:' + "</option>"
     selectDropOffStation += "<option value=" + '0' + ">" + 'Select Drop Off Station:' + "</option>"
-    $.getJSON("http://localhost:5000/stations", function(data){
+    $.getJSON("/stations", function(data){
         if("stations" in data){
             var stations = data.stations;
             _.forEach(stations, function(station){
@@ -306,8 +305,8 @@ function onclickSubmit(){
     var dropoff = document.getElementById("dropoffstation");
     var dropoffValue = dropoff.options[dropoff.selectedIndex].value;
 
-    url_pickup = "http://localhost:5000/available/" + pickupValue;
-    url_dropoff = "http://localhost:5000/available/" + dropoffValue;
+    url_pickup = "/available/" + pickupValue;
+    url_dropoff = "/available/" + dropoffValue;
 
     //console.log(url_pickup);
 
@@ -638,10 +637,10 @@ function setDatetimeLimit(){
     var yyyy = today.getFullYear();
     if(dd<10){
             dd='0'+dd
-        } 
+        }
     if(mm<10){
         mm='0'+mm
-    } 
+    }
 
     maxdd = dd + 5;
     max_date = today = yyyy+'-'+mm+'-'+maxdd;

@@ -8,7 +8,6 @@
 
 {% block content%}
 <div>
-  <p>drop: {{ preresult }}</p>
   <button id="default-b">Default</button>
   <button id="traffic-b">Traffic</button>
   <button id="bike-b">Bike</button>
@@ -22,9 +21,6 @@
   <div class="jumbotron">
     <p>Please select your start point and end point</p>
     {% if 'user' in session %}
-    <p>id: {{user_id}}</p>
-    <p>full name: {{user_full_name}}</p>
-    <p>email: {{user_email}}</p>
     <form id="forecast_form">
       <div style="display: inline-block" id="pickUpStation"></div>
       <input type="date" id="pickdate">
@@ -33,6 +29,7 @@
       <div style="display: inline-block" id="dropOffStation"></div>
       <input type="date" id="dropdate">
       <input type="time" id="droptime">
+      <br>
       <button type="submit" id="forecast">Forecast</button>
     </form>
     <button id="submitStation" onclick="onclickSubmit()">Submit</button>
