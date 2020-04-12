@@ -70,7 +70,7 @@ class LoginForm(FlaskForm):
 
 @app.route("/")
 def root():
-    return render_template("homepage.html")
+    return render_template("testui.html")
 
 @app.route("/uitest")
 def ui():

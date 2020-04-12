@@ -171,7 +171,8 @@ function initMap(){
                         }
                     });
                     document.getElementById("solution_content").innerHTML = 'Start at station: '+start_Station+'. End at station: '+end_Station;
-                    if (document.getElementById("profile-username") != 'Visitor'){
+                    if (document.getElementById("profile-username").innerHTML == 'Visitor'){
+                    }else{
                     solutonMap = new google.maps.Map(document.getElementById('solution_map'), mapDefault);
                     directionsRenderer.setMap(solutonMap);
                     }
@@ -653,8 +654,10 @@ function setDatetimeLimit(){
 
     maxdd = dd + 5;
     max_date = today = yyyy+'-'+mm+'-'+maxdd;
+    if (document.getElementById("profile-username").innerHTML != 'Visitor'){
     document.getElementById("pickdate").setAttribute("max", max_date);
     document.getElementById("dropdate").setAttribute("max", max_date);
+    }
 }
 
 
@@ -754,9 +757,4 @@ function setDatetimeLimit(){
     return false;
   });
 
-  // jQuery counterUp
-  $('[data-toggle="counter-up"]').counterUp({
-    delay: 10,
-    time: 1000
-  });
 })(jQuery);

@@ -42,10 +42,10 @@
       <div class="profile">
         {% if 'user' in session %}
         <img src="/userIcon.jpeg" alt="" class="img-fluid rounded-circle">
-        <h1 class="text-light" id="profile-username" ><a href="#">{{user_full_name}}</a></h1>
+        <h1 class="text-light" id="profile-username" >{{user_full_name}}</h1>
         {% else %}
         <img src="/01d.png" alt="" class="img-fluid rounded-circle">
-        <h1 class="text-light" id="profile-username" ><a href="#">Visitor</a></h1>
+        <h1 class="text-light" id="profile-username" >Visitor</h1>
         {% endif %}
         </div>
       </div>
@@ -57,11 +57,10 @@
           <li><a href="#departures"><i class="bx bx-run"></i> <span>Departures</span></a></li>
           <li><a href="#chart"><i class="bx bx-line-chart"></i> Chart</a></li>
           <li><a href="#solution"><i class="bx bx-run"></i> Solution</a></li>
-          <li><a href="#contact"><i class="bx bx-run"></i> Tobecontinue2</a></li>
 
         </ul>
       </nav><!-- .nav-menu -->
-      <button type="button" class="mobile-nav-toggle d-xl-none"><i class="icofont-navigation-menu"></i></button>
+      <button type="button" class="mobile-nav-toggle d-xl-none"><i class='bx bx-menu'></i></button>
 
     </div>
   </header><!-- End Header -->
@@ -80,7 +79,6 @@
 
         <div class="section-title">
           <h2>Dublin Map</h2>
-          <p> Click marker for more info !!map layer needed to be modify!!</p>
         </div>
 
 	  <div class="portfolio section-bg" style="background: white">
@@ -107,7 +105,6 @@
 
         <div class="section-title">
           <h2>Dublin Weather</h2>
-          <p>Dublin weather info will be shown below.</p>
         </div>
 
         <div class="row no-gutters">
@@ -115,7 +112,7 @@
           <div class="col-lg-3 col-md-6 d-md-flex align-items-md-stretch" data-aos="fade-up">
             <div class="count-box">
               <i class='bx bx-smile'></i>
-              <span id="temp_temp" data-toggle="counter-up"></span>
+              <span id="temp_temp" ></span>
               <p><strong>Temperature</strong></p>
             </div>
           </div>
@@ -123,7 +120,7 @@
           <div class="col-lg-3 col-md-6 d-md-flex align-items-md-stretch" data-aos="fade-up" data-aos-delay="100">
             <div class="count-box">
 			<i class='bx bx-wind'></i>
-              <span id="temp_wind" data-toggle="counter-up"></span>
+              <span id="temp_wind"></span>
               <p><strong>Wind Speed</strong></p>
             </div>
           </div>
@@ -131,7 +128,7 @@
           <div class="col-lg-3 col-md-6 d-md-flex align-items-md-stretch" data-aos="fade-up" data-aos-delay="200">
             <div class="count-box">
             <i class='bx bx-water'></i>
-              <span id="temp_humi" data-toggle="counter-up"></span>
+              <span id="temp_humi"></span>
               <p><strong>Humidity</strong></p>
             </div>
           </div>
@@ -151,14 +148,14 @@
         {% if 'user' in session %}
         <form method="POST" action="/">
         <div style="display: inline-block" id="pickUpStation"></div>
-        <input type="date" name="pickdate">
-        <input type="time" name="picktime">
+        <input type="date" dirname="pickdate">
+        <input type="time" id="dropdate">
         <br>
         <div style="display: inline-block" id="dropOffStation"></div>
-        <input type="date" name="dropdate">
-        <input type="time" name="droptime">
+        <input type="date" id="pickdate">
+        <input type="time" id="picktime">
         <br>
-        <button type="submit" value="submit">Forecast</button>
+        <button type="submit" id="forecast">Forecast</button>
         </form>
         <button id="submitStation" onclick="onclickSubmit()">Submit</button>
         {% else %}
@@ -189,10 +186,26 @@
           <h2>Charts</h2>
           <p>This area is to show bikes and stands charts</p>
         </div>
-            <div id="chart1_div"></div>
-            <div id="chart2_div"></div>
-            <div id="chart3_div"></div>
-            <div id="chart4_div"></div>
+        <br>
+        <div style=" text-align: center; width: 1000px; margin: 0 auto;">
+        <div style="display: inline-block" id="chart1_div"></div>
+        <div style="display: inline-block" id="chart2_div"></div>
+        </div>
+        <br>
+        <div style=" text-align: center; width: 1000px; margin: 0 auto;">
+        <div style="display: inline-block" id="chart3_div"></div>
+        <div style="display: inline-block" id="chart4_div"></div>
+        </div>
+        <br>
+        <div style=" text-align: center; width: 1000px; margin: 0 auto;">
+        <div style="display: inline-block" id="chart5_div"></div>
+        <div style="display: inline-block" id="chart6_div"></div>
+        </div>
+        <br>
+        <div style=" text-align: center; width: 1000px; margin: 0 auto;">
+        <div style="display: inline-block" id="chart7_div"></div>
+        <div style="display: inline-block" id="chart8_div"></div>
+        </div>
       </div>
     </section>
 
@@ -220,7 +233,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
 
   <script async defer type=text/javascript src="{{ url_for('static', filename='js/main.js') }}"></script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTF-S3Ye0aZdAymDWC-V0zVZVJXywAtgo&callback=initMap"></script>
 
   <script language="JavaScript" src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
