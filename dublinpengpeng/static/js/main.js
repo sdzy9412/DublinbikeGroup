@@ -699,7 +699,7 @@ function setDatetimeLimit(){
 
         if ($('body').hasClass('mobile-nav-active')) {
           $('body').removeClass('mobile-nav-active');
-          $('.mobile-nav-toggle i').toggleClass('icofont-navigation-menu icofont-close');
+          $('.mobile-nav-toggle i').toggleClass('bx bx-menu bx-window-close');
         }
         return false;
       }
@@ -708,7 +708,7 @@ function setDatetimeLimit(){
 
   $(document).on('click', '.mobile-nav-toggle', function(e) {
     $('body').toggleClass('mobile-nav-active');
-    $('.mobile-nav-toggle i').toggleClass('icofont-navigation-menu icofont-close');
+    $('.mobile-nav-toggle i').toggleClass('bx bx-menu bx-window-close');
   });
 
   $(document).click(function(e) {
@@ -716,7 +716,7 @@ function setDatetimeLimit(){
     if (!container.is(e.target) && container.has(e.target).length === 0) {
       if ($('body').hasClass('mobile-nav-active')) {
         $('body').removeClass('mobile-nav-active');
-        $('.mobile-nav-toggle i').toggleClass('icofont-navigation-menu icofont-close');
+        $('.mobile-nav-toggle i').toggleClass('bx bx-menu bx-window-close');
       }
     }
   });
