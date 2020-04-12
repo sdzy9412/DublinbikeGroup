@@ -212,8 +212,8 @@ print("Training the model on %s rows and %s columns." % X_train.shape)
 # In[ ]:
 
 
-# Instantiate RandomForestRegressor object calling 100 decision tree models
-rf = RandomForestRegressor(n_estimators=100)
+# Instantiate RandomForestRegressor object calling 10 decision tree models
+rf = RandomForestRegressor(n_estimators=10)
 
 # Train the model
 rf.fit(X_train, Y_train)
@@ -312,8 +312,8 @@ output = df_AllStations['available_bike_stands']
 X_train,X_test,Y_train,Y_test=train_test_split(input_model,output,test_size=0.33,random_state=42)
 print("Training the model on %s rows and %s columns." % X_train.shape)
 
-# Instantiate RandomForestRegressor object calling 100 decision tree models
-rf2 = RandomForestRegressor(n_estimators=100)
+# Instantiate RandomForestRegressor object calling 10 decision tree models
+rf2 = RandomForestRegressor(n_estimators=10)
 
 # Train the model
 rf2.fit(X_train, Y_train)

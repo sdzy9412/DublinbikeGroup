@@ -103,17 +103,16 @@ function initMap(){
             .done(function(data){
                 if("preresult" in data){
                     var results = data.preresult;
-                    var results_len = results.length;
-                    for (var i = 0; i < results_len; i++){
-                        if((i % 2) == 0){
-                            predict_date_pick = new Date(results[i][0]);
-                            predict_pick_array.push([predict_date_pick, results[i][1]]);
-                        }else{
-                            predict_date_drop = new Date(results[i][0]);
-                            predict_drop_array.push([predict_date_drop, results[i][1]]);
-                        }
+                    var pick_results = results[0];
+                    var drop_results = results[1];
+                    _.forEach(pick_results, function(pick_result){
+                        predict_pick_array.push([new Date(pick_result[0]), pick_result[1]]);
+                    })
 
-                    }
+                    _.forEach(drop_results, function(drop_result){
+                        predict_drop_array.push([new Date(drop_result[0]), drop_result[1]]);
+                    })
+
                     google.charts.load("current", {packages:['corechart', 'bar']});
                     google.setOnLoadCallback(function() { drawPredictChart(predict_pick_array, 'chart7_div'); });
                     google.setOnLoadCallback(function() { drawPredictChart(predict_drop_array, 'chart8_div'); });
@@ -638,10 +637,10 @@ function setDatetimeLimit(){
     var yyyy = today.getFullYear();
     if(dd<10){
             dd='0'+dd
-        } 
+        }
     if(mm<10){
         mm='0'+mm
-    } 
+    }
 
     maxdd = dd + 5;
     max_date = today = yyyy+'-'+mm+'-'+maxdd;
