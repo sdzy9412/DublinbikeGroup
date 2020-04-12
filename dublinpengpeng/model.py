@@ -30,23 +30,14 @@
 # In[1]:
 
 
-import pickle 
-#import seaborn as sns
-#import matplotlib.pyplot as plt
-import pandas as pd 
-#import numpy as np 
-#import json
+import pickle
+import pandas as pd
 import pymysql
 
-#from sklearn.linear_model import LinearRegression
+
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
-#from sklearn.preprocessing import PolynomialFeatures
-#from sklearn.pipeline import make_pipeline
-#from patsy import dmatrices
 from sklearn import metrics
-#from sklearn.model_selection import cross_validate
-
 
 # #### Connect to Amazon RDS database
 # After having stored all the necessary credentials in specific variables, we connect to the database providing error-handling in case of connection issues.
