@@ -27,7 +27,7 @@
 # #### Import required packages
 # A number of Python packages are required for our model in order to work, so we import them in our Notebook.
 
-# In[ ]:
+# In[1]:
 
 
 import pickle 
@@ -51,7 +51,7 @@ from sklearn import metrics
 # #### Connect to Amazon RDS database
 # After having stored all the necessary credentials in specific variables, we connect to the database providing error-handling in case of connection issues.
 
-# In[ ]:
+# In[2]:
 
 
 # Attempt connection to database
@@ -78,23 +78,23 @@ except Exception as e:
 # 
 # ***N.B.:***We started scrapping the bikes data on 02/03/2020
 
-# In[ ]:
+# In[3]:
 
 
 # Create dataframe and store data running SQL query
-df_AllStations = pd.read_sql_query("select *,cast(str_to_date(availability.datetime,'%d-%b-%Y (%H:%i:%s.%f)' )as datetime) as datetimeB FROM dublin.availability, dublin.Weather having abs(datetimeB-Weather.dateTime)<30000 and Weather.dateTime<'2020/3/29'", con)
+df_AllStations = pd.read_sql_query("select *,cast(str_to_date(availability.datetime,'%d-%b-%Y (%H:%i:%s.%f)' )as datetime) as datetimeB FROM dublin.availability, dublin.Weather having abs(datetimeB-Weather.dateTime)<10800 and Weather.dateTime<'2020/4/07'", con)
 
 # Examine dataframe object, show first 10 rows
 df_AllStations.head(5)
 
 
-# In[ ]:
+# In[4]:
 
 
 df_AllStations.shape
 
 
-# In[ ]:
+# In[5]:
 
 
 #create column for day of the week
@@ -103,7 +103,7 @@ df_AllStations['hour'] = df_AllStations['datetimeB'].dt.hour
 df_AllStations['minutes'] = df_AllStations['datetimeB'].dt.minute
 
 
-# In[ ]:
+# In[6]:
 
 
 #use number to replace weekdays
@@ -116,7 +116,7 @@ df_AllStations['weekday'] = df_AllStations['weekday'].replace(5, 'Saturday')
 df_AllStations['weekday'] = df_AllStations['weekday'].replace(6, 'Sunday')
 
 
-# In[ ]:
+# In[7]:
 
 
 #show all the columns of the dataframe
@@ -130,7 +130,7 @@ df_AllStations.columns
 # day of the week**  
 # Thus, we transform them in a series of dummy variables. The process is known as "dummy coding".
 
-# In[ ]:
+# In[8]:
 
 
 # Create a separate dataframe with days of the week (categorical)
@@ -146,7 +146,7 @@ df_AllStations = pd.concat([df_AllStations,dummy],axis=1)
 df_AllStations = pd.concat([df_AllStations,dummy_2],axis=1)
 
 
-# In[ ]:
+# In[9]:
 
 
 ## Examine dataframe object, show first rows
@@ -158,7 +158,7 @@ df_AllStations.head()
 # #### New columns
 # The new dummy coded variables have been concatenated at the end of the dataframe, so we now check our dataframe shape.
 
-# In[ ]:
+# In[10]:
 
 
 # Show number of rows and columns of the dataframe
@@ -168,7 +168,7 @@ print("The dataset has %s rows and %s columns." % df_AllStations.shape)
 # #### Data types
 # As a further check, we analyze the data type in our dataframe.
 
-# In[ ]:
+# In[11]:
 
 
 df_AllStations.dtypes
@@ -188,7 +188,7 @@ df_AllStations.dtypes
 
 # **model training**
 
-# In[ ]:
+# In[12]:
 
 
 # Select model features and store them in a new dataframe
@@ -201,7 +201,7 @@ input_model = pd.concat([input_model,dummy_2],axis=1)
 output = df_AllStations['available_bikes']
 
 
-# In[ ]:
+# In[13]:
 
 
 # Split dataset to train and test
@@ -209,7 +209,7 @@ X_train,X_test,Y_train,Y_test=train_test_split(input_model,output,test_size=0.33
 print("Training the model on %s rows and %s columns." % X_train.shape)
 
 
-# In[ ]:
+# In[14]:
 
 
 # Instantiate RandomForestRegressor object calling 10 decision tree models
@@ -224,7 +224,7 @@ print("Testing the model on %s rows." % Y_test.shape[0])
 # **model testing**  
 # Using the trained model to predict the target feature availablebikes on the testing dataset
 
-# In[ ]:
+# In[15]:
 
 
 # Get prediction for test cases
@@ -243,7 +243,7 @@ DF_Bikes = pd.DataFrame(DF_Alltest['available_bikes']).reset_index(drop=True)
 actual_vs_predicted= pd.concat([DF_Bikes,DF_Predicated], axis=1)
 
 
-# In[ ]:
+# In[16]:
 
 
 print("\nPredictions with multiple linear regression: \n")
@@ -253,7 +253,7 @@ actual_vs_predicted
 # **Model evaluation**  
 # In order to evaluate the prediction effectiveness of our model, we compute the mean-absolute error, the mean squared error,the root-mean-square deviation and R2.
 
-# In[ ]:
+# In[17]:
 
 
 def printMetrics(testActualVal, predictions):
@@ -266,7 +266,7 @@ def printMetrics(testActualVal, predictions):
     print("R2: ", metrics.r2_score(testActualVal, predictions))
 
 
-# In[ ]:
+# In[18]:
 
 
 printMetrics(Y_test, prediction)
@@ -278,7 +278,7 @@ printMetrics(Y_test, prediction)
 # In order to connect the ML model to our Flask web application, we need to produce a 'prediction-data' file from the trained model using the ***Pickle*** Python module.  
 # Pickle allows us to store the prediction model in a file that we save on the server, in order to be used by the application to actually deliver a prediction based on the requested stations by the user.
 
-# In[ ]:
+# In[19]:
 
 
 pickle.dump(rf,open('final_prediction_bike.pickle', 'wb'))
@@ -292,7 +292,7 @@ random_forest = pickle.load(open("final_prediction_bike.pickle", "rb"))
 
 # **model training**
 
-# In[ ]:
+# In[20]:
 
 
 # Select model features and store them in a new dataframe
@@ -305,7 +305,7 @@ input_model = pd.concat([input_model,dummy_2],axis=1)
 output = df_AllStations['available_bike_stands']
 
 
-# In[ ]:
+# In[21]:
 
 
 # Split dataset to train and test
@@ -325,7 +325,7 @@ print("Testing the model on %s rows." % Y_test.shape[0])
 #   
 #  Using the trained model to predict the target feature availablebikes on the testing dataset
 
-# In[ ]:
+# In[22]:
 
 
 # Get prediction for test cases
@@ -344,7 +344,7 @@ DF_Stands = pd.DataFrame(DF_Alltest['available_bike_stands']).reset_index(drop=T
 actual_vs_predicted= pd.concat([DF_Stands,DF_Predicated], axis=1)
 
 
-# In[ ]:
+# In[23]:
 
 
 print("\nPredictions with multiple linear regression: \n")
@@ -354,7 +354,7 @@ actual_vs_predicted
 # **model evaluation**  
 # In order to evaluate the prediction effectiveness of our model, we compute the mean-absolute error, the mean squared error,the root-mean-square deviation and R2.
 
-# In[ ]:
+# In[24]:
 
 
 def printMetrics(testActualVal, predictions):
@@ -367,7 +367,7 @@ def printMetrics(testActualVal, predictions):
     print("R2: ", metrics.r2_score(testActualVal, predictions))
 
 
-# In[ ]:
+# In[25]:
 
 
 printMetrics(Y_test, prediction)
@@ -379,7 +379,7 @@ printMetrics(Y_test, prediction)
 # In order to connect the ML model to our Flask web application, we need to produce a 'prediction-data' file from the trained model using the ***Pickle*** Python module.  
 # Pickle allows us to store the prediction model in a file that we save on the server, in order to be used by the application to actually deliver a prediction based on the requested stations by the user.
 
-# In[ ]:
+# In[26]:
 
 
 pickle.dump(rf2,open('final_prediction_bike_stands.pickle', 'wb'))
