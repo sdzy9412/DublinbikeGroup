@@ -148,19 +148,20 @@
         {% if 'user' in session %}
         <form method="POST" action="/">
         <div style="display: inline-block" id="pickUpStation"></div>
-        <input type="date" dirname="pickdate">
-        <input type="time" id="droptime">
-        <br>
-        <div style="display: inline-block" id="dropOffStation"></div>
         <input type="date" id="pickdate">
         <input type="time" id="picktime">
         <br>
-        <button type="submit" id="forecast">Forecast</button>
+        <div style="display: inline-block" id="dropOffStation"></div>
+        <input type="date" id="dropdate">
+        <input type="time" id="droptime">
+        <br>
+        <button type="submit" id="forecast" style="margin:2px">Forecast</button>
         </form>
         <button id="submitStation" onclick="onclickSubmit()">Submit</button>
         {% else %}
 		<div id="pickUpStation" style="float:left; margin-right: 20px"></div>
         <div id="dropOffStation" style="float:left; margin-right: 20px"></div>
+        <button type="submit" id="forecast">Forecast</button>
 		<button id="submitStation" onclick="onclickSubmit()">Submit</button>
         {% endif %}
       </div>
