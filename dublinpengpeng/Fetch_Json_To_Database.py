@@ -19,8 +19,6 @@ def main():
     def validate_string(val):
         if val != None:
             if type(val) is int:
-                # for x in val:
-                #   print(x)
                 return str(val).encode('utf-8')
             else:
                 return val
