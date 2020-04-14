@@ -225,7 +225,7 @@ def prediction_model():
                         speed = allweather['list'][i]['wind']['speed']
                         weatherdatalist.extend((str(inputtime),temp,cloud,speed))
                 weatherdatalists.append(weatherdatalist)
-            return weatherdatalists,selectedweather
+            return weatherdatalists,selectedweatherlist
         elif(len(post)==4): #both pickup and dropoff station
             selectedweather = []
             selectedtime_start = datetime.strptime(post[1], '%Y-%m-%d %H:%M')
