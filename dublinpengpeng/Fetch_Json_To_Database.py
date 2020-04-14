@@ -6,11 +6,10 @@
 
 
 import json
-#import pandas as pd
 import pymysql
 
 def main():
-    # try:
+    #try:
     with open('dublin.json') as json_data:
         json_obj = json.load(json_data)
 
@@ -20,8 +19,6 @@ def main():
     def validate_string(val):
         if val != None:
             if type(val) is int:
-                # for x in val:
-                #   print(x)
                 return str(val).encode('utf-8')
             else:
                 return val
@@ -30,12 +27,6 @@ def main():
     # connect to MySQL
     con = pymysql.connect(host='dublinbike.cczltqdfsp1t.eu-west-1.rds.amazonaws.com', user='root', passwd='shuyuqian', db='dublin')
     cursor = con.cursor()
-
-
-    #     latitude = validate_string(item.get("latitude", None))
-    #     longitude = validate_string(item.get("longitude", None))
-    #     cursor.execute("INSERT INTO dublinbike_static (number, name, address) VALUES (%s,%s,$s)", (number, name, address))
-    #     cursor.execute("INSERT INTO dublinbike_static (number,	name,	address,	latitude,	longitude) VALUES (%s,	%s,	%s,	%s,	%s)", (number,	name,	address,	latitude,	longitude))
 
 
     cursor.execute(
@@ -54,9 +45,9 @@ def main():
     con.commit()
     con.close()
 
-    # except:
-    #         print("Unable to get information.")
-    # return
+#     except:
+#             print("Unable to get information.")
+#     return
 
 
 if __name__ == '__main__':
