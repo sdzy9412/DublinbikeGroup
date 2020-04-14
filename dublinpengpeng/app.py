@@ -194,8 +194,21 @@ def prediction_model():
         :return:
         """
         allweather = allweatherdata()
+        selectedweatherlist =[]
         weatherdatalists = []
         if(len(post)==2):#only pickup or drop off station
+            selectedtime = datetime.strptime(post[1], '%Y-%m-%d %H:%M')
+            three_hours_from_input = selectedtime + timedelta(hours=1.5)
+            three_hours_to_input = selectedtime - timedelta(hours=1.5)
+            for i in range(0, len(allweather['list'])):
+                time = allweather['list'][i]['dt_txt']
+                time_datetime = datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
+                if (three_hours_from_input > time_datetime > three_hours_to_input):  # 目前只能做相等 还要改为大于小于
+                    print("only start or end：", i, time)
+                    temp = allweather['list'][i]['main']['temp']
+                    cloud = allweather['list'][i]['weather'][0]['main']
+                    speed = allweather['list'][i]['wind']['speed']
+                    selectedweatherlist.extend((temp, cloud, speed))
             inputtime = datetime.strptime(post[1], '%Y-%m-%d %H:%M') - timedelta(hours=3)
             for k in range(5):
                 weatherdatalist = []
@@ -212,8 +225,34 @@ def prediction_model():
                         speed = allweather['list'][i]['wind']['speed']
                         weatherdatalist.extend((str(inputtime),temp,cloud,speed))
                 weatherdatalists.append(weatherdatalist)
-            return weatherdatalists
+            return weatherdatalists,selectedweather
         elif(len(post)==4): #both pickup and dropoff station
+            selectedweather = []
+            selectedtime_start = datetime.strptime(post[1], '%Y-%m-%d %H:%M')
+            selectedtime_end = datetime.strptime(post[3], '%Y-%m-%d %H:%M')
+            three_hours_from_start = selectedtime_start + timedelta(hours=1.5)
+            three_hours_to_start = selectedtime_start - timedelta(hours=1.5)
+            three_hours_from_end = selectedtime_end + timedelta(hours=1.5)
+            three_hours_to_end = selectedtime_end - timedelta(hours=1.5)
+            for i in range(0, len(allweather['list'])):
+                time = allweather['list'][i]['dt_txt']
+                time_datetime = datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
+                if (three_hours_from_start > time_datetime > three_hours_to_start):
+                    temp = allweather['list'][i]['main']['temp']
+                    cloud = allweather['list'][i]['weather'][0]['main']
+                    speed = allweather['list'][i]['wind']['speed']
+                    selectedweather.append([temp, cloud, speed])
+            for i in range(0, len(allweather['list'])):
+                time = allweather['list'][i]['dt_txt']
+                time_datetime = datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
+                if (three_hours_from_end > time_datetime > three_hours_to_end):
+                    print("end", i, time)
+                    temp = allweather['list'][i]['main']['temp']
+                    cloud = allweather['list'][i]['weather'][0]['main']
+                    speed = allweather['list'][i]['wind']['speed']
+                    selectedweather.append([temp, cloud, speed])
+            selectedweatherlist.extend(selectedweather)
+
             inputtime_start = datetime.strptime(post[1], '%Y-%m-%d %H:%M') - timedelta(hours=3)
             inputtime_end = datetime.strptime(post[3], '%Y-%m-%d %H:%M') - timedelta(hours=3)
             for k in range(5):
@@ -243,9 +282,11 @@ def prediction_model():
                         speed = allweather['list'][i]['wind']['speed']
                         weatherdatalist.extend((str(inputtime_end),temp, cloud, speed))
                 weatherdatalists.append(weatherdatalist)
-            return weatherdatalists
+            return weatherdatalists,selectedweatherlist
 
-    weatherdatalists = weatherdata(post)
+    weatherdatalists, selectedweather = weatherdata(post)
+    print("selected weather: ",selectedweather)
+
 
     #The second part: for prediction
     random_forest_bikes = pickle.load(open(os.path.abspath("final_prediction_bike.pickle"), 'rb'))
@@ -356,6 +397,7 @@ def prediction_model():
                 resultlist.append([convertedtime,result[i]])
             finallist.append(resultlist)
             finallist.append([])
+            finallist.append(selectedweather)
         elif (picktime == ''):#only dropoff station
             print("only drop off")
             for i in range(len(timeall)):
@@ -363,6 +405,7 @@ def prediction_model():
                 resultlist.append([convertedtime,result[i]])
             finallist.append([])
             finallist.append(resultlist)
+            finallist.append(selectedweather)
     elif len(result)==10:
         pickuplist = []
         dropofflist = []
@@ -376,6 +419,7 @@ def prediction_model():
                 dropofflist.append(resultlist[i])
         finallist.append(pickuplist)
         finallist.append(dropofflist)
+        finallist.append(selectedweather)
     print(finallist)
     return jsonify(preresult=finallist)
 
