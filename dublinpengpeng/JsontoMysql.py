@@ -94,7 +94,7 @@ def main():
             print(station)
             timestampStr = now.strftime("%d-%b-%Y (%H:%M:%S.%f)")
             vals = (timestampStr, int(station.get('number')), int(station.get('available_bikes')),
-                    int(station.get('available_bike_stands')), int(station.get('bonus')),
+                    int(station.get('available_bike_stands')), int(station.get('last_update')),
                     )
             engine.execute("insert into availability values(%s,%s,%s,%s,%s)", vals)
         return
