@@ -175,6 +175,7 @@ function initMap(){
                     }else{
                     solutonMap = new google.maps.Map(document.getElementById('solution_map'), mapDefault);
                     directionsRenderer.setMap(solutonMap);
+                    directionsRenderer.setPanel(document.getElementById('directionsPanel'));
                     }
                 }
 
