@@ -111,6 +111,13 @@ function initMap(){
                     var results = data.preresult;
                     var pick_results = results[0];
                     var drop_results = results[1];
+                    var weather_results = results[2];
+
+                    pick_weather = weather_results[0];
+                    drop_weather = weather_results[1];
+
+                    document.getElementById("weatherforecast").innerHTML = 'Start: '+pick_weather[1]+'. End: '+drop_weather[1];
+
                     _.forEach(pick_results, function(pick_result){
                         predict_pick_array.push([new Date(pick_result[0]), pick_result[1]]);
                     })
