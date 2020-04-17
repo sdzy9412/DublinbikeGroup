@@ -113,10 +113,10 @@ function initMap(){
                     var drop_results = results[1];
                     var weather_results = results[2];
 
-                    pick_weather = weather_bar(weather_results[0][1]);
-                    drop_weather = weather_bar(weather_results[1][1]);
+                    pick_weather = weather_bar(weather_results[1]);
+                    drop_weather = weather_bar(weather_results[4]);
 
-                    document.getElementById("weatherforecast").innerHTML = "<div ><p><strong>Bicycling suitability</strong></p></div><div><p>Start point: "+weather_results[0][1]+"</p></div><div class=\"progress border\" style=\"width:60%\">"+pick_weather+"</div><br><div><p>End point: "+weather_results[1][1]+"</p><div class=\"progress border\" style=\"width:60%\">"+drop_weather+"</div>";
+                    document.getElementById("weatherforecast").innerHTML = "<div><p><strong>Bicycling suitability</strong></p></div><div><p>Start point: "+weather_results[1]+"</p></div><div class=\"progress border\" style=\"width:60%\">"+pick_weather+"</div><br><div><p>End point: "+weather_results[4]+"</p><div class=\"progress border\" style=\"width:60%\">"+drop_weather+"</div>";
 
                     _.forEach(pick_results, function(pick_result){
                         predict_pick_array.push([new Date(pick_result[0]), pick_result[1]]);
@@ -127,8 +127,8 @@ function initMap(){
                     })
 
                     google.charts.load("current", {packages:['corechart', 'bar']});
-                    google.setOnLoadCallback(function() { drawPredictChart(predict_pick_array, 'chart7_div'); });
-                    google.setOnLoadCallback(function() { drawPredictChart(predict_drop_array, 'chart8_div'); });
+                    google.setOnLoadCallback(function() { drawPredictChart(predict_pick_array, 'chart7_div', 'available bikes in pick up station in forecast'); });
+                    google.setOnLoadCallback(function() { drawPredictChart(predict_drop_array, 'chart8_div', 'available bike stands in drop off station in forecast'); });
 
                 }
             });
@@ -473,14 +473,14 @@ function onclickSubmit(){
             ];
 
             google.charts.load("current", {packages:['corechart', 'bar']});
-            google.setOnLoadCallback(function() { drawDailyChart(DailyArraypick, 'chart1_div'); });
-            google.setOnLoadCallback(function() { drawDailyChart(DailyArraydrop, 'chart2_div'); });
+            google.setOnLoadCallback(function() { drawDailyChart(DailyArraypick, 'chart1_div', 'available bikes in pick up station in past 24 hours'); });
+            google.setOnLoadCallback(function() { drawDailyChart(DailyArraydrop, 'chart2_div', 'available bike stands in drop off station in past 24 hours'); });
 
-            google.charts.load("current", {packages:['corechart']});
-            google.setOnLoadCallback(function() { drawWeeklyChart(WeeklyArraypick, 'chart3_div'); });
-            google.setOnLoadCallback(function() { drawWeeklyChart(WeeklyArraydrop, 'chart4_div'); });
-            google.setOnLoadCallback(function() { drawAverageChart(AverageArraypick, 'chart5_div'); });
-            google.setOnLoadCallback(function() { drawAverageChart(AverageArraydrop, 'chart6_div'); });
+            google.charts.load("current", {packages:['line']});
+            google.setOnLoadCallback(function() { drawWeeklyChart(WeeklyArraypick, 'chart3_div', 'available bikes in pick up station in past 7 days'); });
+            google.setOnLoadCallback(function() { drawWeeklyChart(WeeklyArraydrop, 'chart4_div', 'available bike stands in drop off station in past 7 days'); });
+            google.setOnLoadCallback(function() { drawAverageChart(AverageArraypick, 'chart5_div', 'available bikes in pick up station in average weekly'); });
+            google.setOnLoadCallback(function() { drawAverageChart(AverageArraydrop, 'chart6_div', 'available bike stands in drop off station in average weekly'); });
         }
     });
 }
@@ -537,7 +537,7 @@ function monthStringToInt(string){
     return num;
 }
 
-function drawDailyChart(DailyArray, div_place) {
+function drawDailyChart(DailyArray, div_place, titlename) {
 
     var data = new google.visualization.DataTable();
     data.addColumn('datetime');
@@ -546,9 +546,10 @@ function drawDailyChart(DailyArray, div_place) {
     data.addRows(DailyArray);
 
     var options = {
+        title: titlename,
         chart: {
-            height: 250,
-            width: 500
+           height: 250,
+           width: 500
             },
         vAxis: {
             viewWindowMode:'explicit',
@@ -565,7 +566,7 @@ function drawDailyChart(DailyArray, div_place) {
 }
 
 
-function drawWeeklyChart(WeeklyArray, div_place) {
+function drawWeeklyChart(WeeklyArray, div_place, titlename) {
 
     var data = new google.visualization.DataTable();
     data.addColumn('datetime');
@@ -574,6 +575,7 @@ function drawWeeklyChart(WeeklyArray, div_place) {
     data.addRows(WeeklyArray);
 
     var options = {
+        title: titlename,
         chart: {
             height: 250,
             width: 500
@@ -587,13 +589,17 @@ function drawWeeklyChart(WeeklyArray, div_place) {
         legend: {position: 'none'}
     };
 
-    var chart = new google.visualization.LineChart(document.getElementById(div_place));
+    var chart = new google.charts.Line(document.getElementById(div_place));
 
-    chart.draw(data, options);
+    chart.draw(data, google.charts.Line.convertOptions(options));
+
+    //var chart = new google.visualization.LineChart(document.getElementById(div_place));
+
+    //chart.draw(data, options);
 }
 
 
-function drawAverageChart(AverageArray, div_place){
+function drawAverageChart(AverageArray, div_place, titlename){
 
     var data = new google.visualization.DataTable();
     data.addColumn('string');
@@ -602,6 +608,7 @@ function drawAverageChart(AverageArray, div_place){
     data.addRows(AverageArray);
 
     var options = {
+        title: titlename,
         chart: {
             height: 250,
             width: 500
@@ -615,12 +622,16 @@ function drawAverageChart(AverageArray, div_place){
         legend: {position: 'none'}
     };
 
-    var chart = new google.visualization.LineChart(document.getElementById(div_place));
+    var chart = new google.charts.Line(document.getElementById(div_place));
 
-    chart.draw(data, options);
+    chart.draw(data, google.charts.Line.convertOptions(options));
+
+    // var chart = new google.visualization.LineChart(document.getElementById(div_place));
+
+    // chart.draw(data, options);
 }
 
-function drawPredictChart(PredictArray, div_place) {
+function drawPredictChart(PredictArray, div_place, titlename) {
 
     var data = new google.visualization.DataTable();
     data.addColumn('datetime');
@@ -629,6 +640,7 @@ function drawPredictChart(PredictArray, div_place) {
     data.addRows(PredictArray);
 
     var options = {
+        title: titlename,
         chart: {
             height: 250,
             width: 500
