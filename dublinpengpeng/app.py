@@ -17,8 +17,7 @@ from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Email, EqualTo
 import os
 
-# print(os.path.abspath("dublinpengpeng/final_prediction_bike.pickle"))
-# print(os.path.abspath("dublinpengpeng/final_prediction_bike_stands.pickle"))
+
 
 import sklearn
 app = Flask(__name__,static_url_path='')
@@ -166,8 +165,7 @@ def prediction_model():
     drop = request.form["drop"]
     dropdate = request.form["dropdate"]
     droptime = request.form["droptime"]
-    print("picktime: ",picktime)
-    print("droptime: ", droptime)
+
     #distinct post according to the data from front end.
     if picktime == '':
         post = [drop,dropdate+" "+droptime]
@@ -186,6 +184,30 @@ def prediction_model():
         allweather = weatherDataString.json()
         return allweather
 
+    def getselectedweatherdata(length, allweather, selectedtime, selectedweatherlist):
+        three_hours_from_input = selectedtime + timedelta(hours=1.5)
+        three_hours_to_input = selectedtime - timedelta(hours=1.5)
+        for i in range(0, length):  # length=len(allweather['list']
+            time = allweather['list'][i]['dt_txt']
+            time_datetime = datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
+            if (three_hours_from_input > time_datetime > three_hours_to_input):
+                temp = allweather['list'][i]['main']['temp']
+                cloud = allweather['list'][i]['weather'][0]['main']
+                speed = allweather['list'][i]['wind']['speed']
+                selectedweatherlist.extend((temp, cloud, speed))
+        return selectedweatherlist
+
+    def getallweatherdata(inputtime, three_hours_from,three_hours_to, length, allweather, weatherdatalist):
+        for i in range(0, length):
+            time = allweather['list'][i]['dt_txt']
+            time_datetime = datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
+            if (three_hours_from > time_datetime > three_hours_to):
+                temp = allweather['list'][i]['main']['temp']
+                cloud = allweather['list'][i]['weather'][0]['main']
+                speed = allweather['list'][i]['wind']['speed']
+                weatherdatalist.extend((str(inputtime), temp, cloud, speed))
+        return weatherdatalist
+
     def weatherdata(post):
         """
         return the weather data list according to input time.
@@ -196,63 +218,27 @@ def prediction_model():
         allweather = allweatherdata()
         selectedweatherlist =[]
         weatherdatalists = []
+        length = len(allweather['list'])
         if(len(post)==2):#only pickup or drop off station
             selectedtime = datetime.strptime(post[1], '%Y-%m-%d %H:%M')
-            three_hours_from_input = selectedtime + timedelta(hours=1.5)
-            three_hours_to_input = selectedtime - timedelta(hours=1.5)
-            for i in range(0, len(allweather['list'])):
-                time = allweather['list'][i]['dt_txt']
-                time_datetime = datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
-                if (three_hours_from_input > time_datetime > three_hours_to_input):  # 目前只能做相等 还要改为大于小于
-                    print("only start or end：", i, time)
-                    temp = allweather['list'][i]['main']['temp']
-                    cloud = allweather['list'][i]['weather'][0]['main']
-                    speed = allweather['list'][i]['wind']['speed']
-                    selectedweatherlist.extend((temp, cloud, speed))
+            selectedweatherlist = getselectedweatherdata(length, allweather, selectedtime, selectedweatherlist)
+
             inputtime = datetime.strptime(post[1], '%Y-%m-%d %H:%M') - timedelta(hours=3)
             for k in range(5):
                 weatherdatalist = []
                 inputtime = inputtime + timedelta(hours=1)
                 three_hours_from_input = inputtime + timedelta(hours=1.5)
                 three_hours_to_input = inputtime - timedelta(hours=1.5)
-                for i in range(0, len(allweather['list'])):
-                    time = allweather['list'][i]['dt_txt']
-                    time_datetime = datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
-                    if (three_hours_from_input > time_datetime > three_hours_to_input):  # 目前只能做相等 还要改为大于小于
-                        print("only start or end：",i,time)
-                        temp = allweather['list'][i]['main']['temp']
-                        cloud = allweather['list'][i]['weather'][0]['main']
-                        speed = allweather['list'][i]['wind']['speed']
-                        weatherdatalist.extend((str(inputtime),temp,cloud,speed))
+                weatherdatalist = getallweatherdata(inputtime, three_hours_from_input, three_hours_to_input, length, allweather, weatherdatalist)
                 weatherdatalists.append(weatherdatalist)
             return weatherdatalists,selectedweatherlist
         elif(len(post)==4): #both pickup and dropoff station
             selectedweather = []
             selectedtime_start = datetime.strptime(post[1], '%Y-%m-%d %H:%M')
             selectedtime_end = datetime.strptime(post[3], '%Y-%m-%d %H:%M')
-            three_hours_from_start = selectedtime_start + timedelta(hours=1.5)
-            three_hours_to_start = selectedtime_start - timedelta(hours=1.5)
-            three_hours_from_end = selectedtime_end + timedelta(hours=1.5)
-            three_hours_to_end = selectedtime_end - timedelta(hours=1.5)
-            for i in range(0, len(allweather['list'])):
-                time = allweather['list'][i]['dt_txt']
-                time_datetime = datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
-                if (three_hours_from_start > time_datetime > three_hours_to_start):
-                    temp = allweather['list'][i]['main']['temp']
-                    cloud = allweather['list'][i]['weather'][0]['main']
-                    speed = allweather['list'][i]['wind']['speed']
-                    selectedweather.append([temp, cloud, speed])
-            for i in range(0, len(allweather['list'])):
-                time = allweather['list'][i]['dt_txt']
-                time_datetime = datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
-                if (three_hours_from_end > time_datetime > three_hours_to_end):
-                    print("end", i, time)
-                    temp = allweather['list'][i]['main']['temp']
-                    cloud = allweather['list'][i]['weather'][0]['main']
-                    speed = allweather['list'][i]['wind']['speed']
-                    selectedweather.append([temp, cloud, speed])
+            selectedweather = getselectedweatherdata(length, allweather, selectedtime_start, selectedweather)  # pickup station
+            selectedweather = getselectedweatherdata(length, allweather, selectedtime_end, selectedweather)  # dropoff station
             selectedweatherlist.extend(selectedweather)
-
             inputtime_start = datetime.strptime(post[1], '%Y-%m-%d %H:%M') - timedelta(hours=3)
             inputtime_end = datetime.strptime(post[3], '%Y-%m-%d %H:%M') - timedelta(hours=3)
             for k in range(5):
@@ -263,29 +249,13 @@ def prediction_model():
                 three_hours_to_start = inputtime_start - timedelta(hours=1.5)
                 three_hours_from_end = inputtime_end + timedelta(hours=1.5)
                 three_hours_to_end = inputtime_end - timedelta(hours=1.5)
-
-                for i in range(0, len(allweather['list'])):
-                    time = allweather['list'][i]['dt_txt']
-                    time_datetime = datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
-                    if (three_hours_from_start > time_datetime > three_hours_to_start):
-                        temp = allweather['list'][i]['main']['temp']
-                        cloud = allweather['list'][i]['weather'][0]['main']
-                        speed = allweather['list'][i]['wind']['speed']
-                        weatherdatalist.extend((str(inputtime_start),temp, cloud, speed))
-                for i in range(0, len(allweather['list'])):
-                    time = allweather['list'][i]['dt_txt']
-                    time_datetime = datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
-                    if (three_hours_from_end > time_datetime > three_hours_to_end):
-                        print("end",i, time)
-                        temp = allweather['list'][i]['main']['temp']
-                        cloud = allweather['list'][i]['weather'][0]['main']
-                        speed = allweather['list'][i]['wind']['speed']
-                        weatherdatalist.extend((str(inputtime_end),temp, cloud, speed))
+                weatherdatalist=getallweatherdata(inputtime_start, three_hours_from_start, three_hours_to_start, length, allweather, weatherdatalist)
+                weatherdatalist = getallweatherdata(inputtime_end, three_hours_from_end, three_hours_to_end, length, allweather, weatherdatalist)
                 weatherdatalists.append(weatherdatalist)
+
             return weatherdatalists,selectedweatherlist
 
     weatherdatalists, selectedweather = weatherdata(post)
-    print("selected weather: ",selectedweather)
 
 
     #The second part: for prediction
@@ -378,7 +348,6 @@ def prediction_model():
                 available_bikes_P = [int(available_bikes_P)]
                 result.extend(available_bikes_P)
             elif(picktime == ''):
-                print("first:only drop off")
                 # destination
                 predict_request = [
                     [stationNum, temp, windSpeed, hour, datalist[0], datalist[1], datalist[2],
@@ -391,7 +360,6 @@ def prediction_model():
     finallist=[]
     if len(result)==5:
         if(droptime == ''):#only pickup station
-            print("only pick up")
             for i in range(len(timeall)):
                 convertedtime = int(datetime.timestamp(timeall[i])*1000)
                 resultlist.append([convertedtime,result[i]])
@@ -399,7 +367,6 @@ def prediction_model():
             finallist.append([])
             finallist.append(selectedweather)
         elif (picktime == ''):#only dropoff station
-            print("only drop off")
             for i in range(len(timeall)):
                 convertedtime = int(datetime.timestamp(timeall[i])*1000)
                 resultlist.append([convertedtime,result[i]])
@@ -420,7 +387,7 @@ def prediction_model():
         finallist.append(pickuplist)
         finallist.append(dropofflist)
         finallist.append(selectedweather)
-    print(finallist)
+    #print(finallist)
     return jsonify(preresult=finallist)
 
 if __name__ == '__main__':
