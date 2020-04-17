@@ -143,26 +143,42 @@
 
         <div class="section-title">
           <h2>Departure</h2>
-          <p>Please select your start point and end point.</p>
+        </div>
+        <div>
+          <p><strong>Please select your start point and end point</strong></p>
         </div>
         {% if 'user' in session %}
         <form method="POST" action="/">
+        <div style="text-align: center; margin-bottom: 50px;">
         <div style="display: inline-block" id="pickUpStation"></div>
+        <div style="display: inline-block" id="dropOffStation"></div>
+
+        <button id="submitStation" onclick="onclickSubmit()" class="btn btn-primary">Submit</button>
+        </div>
+        <div>
+          <p><strong>Please select your pick up time and drop off time</strong></p>
+        </div>
+        <div style="text-align: center; margin-bottom: 50px;">
         <input type="date" id="pickdate">
         <input type="time" id="picktime">
-        <br>
-        <div style="display: inline-block" id="dropOffStation"></div>
+
         <input type="date" id="dropdate">
         <input type="time" id="droptime">
-        <br>
-        <button type="submit" id="forecast" style="margin:2px">Forecast</button>
+
+        <button type="submit" id="forecast" class="btn btn-primary">Forecast</button>
+        </div>
+
         </form>
-        <button id="submitStation" onclick="onclickSubmit()">Submit</button>
+
+        <div id="weatherforecast"></div>
         {% else %}
+        <div style="text-align: center">
 		<div id="pickUpStation" style="float:left; margin-right: 20px"></div>
         <div id="dropOffStation" style="float:left; margin-right: 20px"></div>
-        <button type="submit" id="forecast">Forecast</button>
-		<button id="submitStation" onclick="onclickSubmit()">Submit</button>
+
+
+		<button id="submitStation" onclick="onclickSubmit()" class="btn btn-primary">Submit</button>
+        </div>
         {% endif %}
       </div>
     </section><!-- End Departures Section -->
@@ -173,7 +189,7 @@
           <h2>Solution</h2>
           {% if 'user' in session %}
           <p id="solution_content"></p>
-          <div id="directionsPanel"></div>
+          <div id="directionsPanel" style="float:left;width:400px;margin:5px"></div>
           <div id="solution_map" class="map-container z-depth-1-half" style="float:right;height:400px;width:500px;margin:5px"></div>
           {% else %}
           <p id="solution_content"></p>
@@ -188,7 +204,10 @@
           <h2>Charts</h2>
           <p>This area is to show bikes and stands charts</p>
         </div>
-        <div id="weatherforecast"></div>
+        <div style=" text-align: center; width: 100%; margin: 0 auto;">
+        <div style="display: inline-block" id="chart7_div"></div>
+        <div style="display: inline-block" id="chart8_div"></div>
+        </div>
         <br>
         <div style=" text-align: center; width: 100%; margin: 0 auto;">
         <div style="display: inline-block" id="chart1_div"></div>
@@ -205,14 +224,8 @@
         <div style="display: inline-block" id="chart6_div"></div>
         </div>
         <br>
-        <div style=" text-align: center; width: 100%; margin: 0 auto;">
-        <div style="display: inline-block" id="chart7_div"></div>
-        <div style="display: inline-block" id="chart8_div"></div>
-        </div>
       </div>
     </section>
-
-
   </main><!-- End #main -->
 
   <!-- ======= Footer ======= -->

@@ -113,10 +113,10 @@ function initMap(){
                     var drop_results = results[1];
                     var weather_results = results[2];
 
-                    pick_weather = weather_results[0];
-                    drop_weather = weather_results[1];
+                    pick_weather = weather_bar(weather_results[0][1]);
+                    drop_weather = weather_bar(weather_results[1][1]);
 
-                    document.getElementById("weatherforecast").innerHTML = 'Start: '+pick_weather[1]+'. End: '+drop_weather[1];
+                    document.getElementById("weatherforecast").innerHTML = "<div ><p><strong>Bicycling suitability</strong></p></div><div><p>Start point: "+weather_results[0][1]+"</p></div><div class=\"progress border\" style=\"width:60%\">"+pick_weather+"</div><br><div><p>End point: "+weather_results[1][1]+"</p><div class=\"progress border\" style=\"width:60%\">"+drop_weather+"</div>";
 
                     _.forEach(pick_results, function(pick_result){
                         predict_pick_array.push([new Date(pick_result[0]), pick_result[1]]);
@@ -660,13 +660,37 @@ function setDatetimeLimit(){
         mm='0'+mm
     }
 
-    maxdd = dd + 5;
+    maxdd = dd + 4;
     max_date = today = yyyy+'-'+mm+'-'+maxdd;
     if (document.getElementById("profile-username").innerHTML != 'Visitor'){
     document.getElementById("pickdate").setAttribute("max", max_date);
     document.getElementById("dropdate").setAttribute("max", max_date);
     }
 }
+
+function weather_bar(weather){
+    var output;
+    switch(weather){
+    case "Clear":
+        output = "<div class=\"progress-bar\" style=\"width:90%\"></div>";
+        break;
+    case "Clouds":
+        output = "<div class=\"progress-bar bg-secondary\" style=\"width:70%\"></div>";
+        break;
+    case "Drizzle":
+        output = "<div class=\"progress-bar bg-warning\" style=\"width:50%\"></div>";
+        break;
+    case "Rain":
+        output = "<div class=\"progress-bar bg-danger\" style=\"width:30%\"></div>";
+        break;
+    case "Mist":
+        output = "<div class=\"progress-bar bg-dark\" style=\"width:10%\"></div>";
+
+    }
+    return output;
+}
+
+
 
 
 
