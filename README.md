@@ -15,7 +15,7 @@ For Unregistered users, you can:
 For Loggedin users, apart from the functionalities listed above, you can:
 1. have you own nickname and avatar.
 2. select pickup station and/or dropoff station, click "submit" and get the best route between two stations as well as the estimated time of the route on "solution" part.
-3. Choose estimated start and/or end times for pickup and/or dropoff stations, click "predict" and get the predicted weather information of the selected time, the number of available bikes and bike stands of selected stations in selected time.
+3. choose estimated start and/or end times for pickup and/or dropoff stations, click "predict" and get the predicted weather information of the selected time, the number of available bikes and/or bike stands of selected stations in the selected time.
 
 Moreover, even though we have made the website responsive, for a better user experience, we strongly recommend you visit our website from a laptop!
 
