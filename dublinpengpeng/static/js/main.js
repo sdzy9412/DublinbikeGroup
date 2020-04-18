@@ -673,8 +673,11 @@ function setDatetimeLimit(){
     }
 
     maxdd = dd + 4;
-    max_date = today = yyyy+'-'+mm+'-'+maxdd;
+    min_date = yyyy+'-'+mm+'-'+dd;
+    max_date = yyyy+'-'+mm+'-'+maxdd;
     if (document.getElementById("profile-username").innerHTML != 'Visitor'){
+    document.getElementById("pickdate").setAttribute("min", min_date);
+    document.getElementById("dropdate").setAttribute("min", min_date);
     document.getElementById("pickdate").setAttribute("max", max_date);
     document.getElementById("dropdate").setAttribute("max", max_date);
     }
@@ -684,19 +687,19 @@ function weather_bar(weather){
     var output;
     switch(weather){
     case "Clear":
-        output = "<div class=\"progress-bar\" style=\"width:90%\"></div>";
+        output = "<div class=\"progress-bar\" style=\"width:90%\">90%</div>";
         break;
     case "Clouds":
-        output = "<div class=\"progress-bar bg-secondary\" style=\"width:70%\"></div>";
+        output = "<div class=\"progress-bar bg-secondary\" style=\"width:70%\">70%</div>";
         break;
     case "Drizzle":
-        output = "<div class=\"progress-bar bg-warning\" style=\"width:50%\"></div>";
+        output = "<div class=\"progress-bar bg-warning\" style=\"width:50%\">50%</div>";
         break;
     case "Rain":
-        output = "<div class=\"progress-bar bg-danger\" style=\"width:30%\"></div>";
+        output = "<div class=\"progress-bar bg-danger\" style=\"width:30%\">30%</div>";
         break;
     case "Mist":
-        output = "<div class=\"progress-bar bg-dark\" style=\"width:10%\"></div>";
+        output = "<div class=\"progress-bar bg-dark\" style=\"width:10%\">10%</div>";
 
     }
     return output;
