@@ -121,7 +121,7 @@ def get_station():
 def get_available():
     engine = get_db()
     available = []
-    DynamicInfo = "SELECT * FROM availability order by last_update desc limit 109;"
+    DynamicInfo = "SELECT * FROM availability order by last_update desc limit 110;"
     rows = engine.execute(DynamicInfo)
     for row in rows:
         available.append(dict(row))

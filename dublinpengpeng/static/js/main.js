@@ -36,17 +36,20 @@ function initMap(){
     //Set station markers as global variables
     var AllStationMarker = [];
 
+    //Use setMap method to place and remove markers
     function setMapOnAll(map) {
         for (var i = 0; i < AllStationMarker.length; i++) {
             AllStationMarker[i].setMap(map);
         }
     }
 
+    //Call setMapOnAll() function to remove marker from map, the marker information remain in the list
     function clearMarkers() {
         setMapOnAll(null);
-        console.log(AllStationMarker);
     }
 
+    //jQuery trigger the clicking button event
+    //default button for default google map layer(hiding other layers)
     $('#default-b').click(function(){
         bikeLayer.setMap(null);
         trafficLayer.setMap(null);
@@ -55,6 +58,7 @@ function initMap(){
         directionsRenderer.setMap(null);
     });
 
+    //traffic button for traffic layer(hiding other layers)
     $('#traffic-b').click(function(){
         bikeLayer.setMap(null);
         trafficLayer.setMap(map);
@@ -63,6 +67,7 @@ function initMap(){
         directionsRenderer.setMap(null);
     });
 
+    //bike button for bike layer(hiding other layers)
     $('#bike-b').click(function(){
         bikeLayer.setMap(map);
         trafficLayer.setMap(null);
@@ -71,6 +76,7 @@ function initMap(){
         directionsRenderer.setMap(null);
     });
 
+    //heat button for bike stands heatmap(hiding other layers)
     $('#heat-b').click(function(){
         bikeLayer.setMap(null);
         trafficLayer.setMap(null);
@@ -89,7 +95,7 @@ function initMap(){
     });
     */
 
-    //ajax function to submit prediction form
+    //ajax function to submit prediction form in POST method and draw charts for the data returned
     $(document).ready(function(){
         $('form').on('submit',function(event){
             var predict_pick_array = [];
@@ -113,11 +119,14 @@ function initMap(){
                     var drop_results = results[1];
                     var weather_results = results[2];
 
+                    //Get weather forecast information back and pass it to weather_bar function
                     pick_weather = weather_bar(weather_results[1]);
                     drop_weather = weather_bar(weather_results[4]);
 
+                    //Set progress bar for weather forecast
                     document.getElementById("weatherforecast").innerHTML = "<div><p><strong>Bicycling suitability</strong></p></div><div><p>Start point: "+weather_results[1]+"</p></div><div class=\"progress border\" style=\"width:60%\">"+pick_weather+"</div><br><div><p>End point: "+weather_results[4]+"</p><div class=\"progress border\" style=\"width:60%\">"+drop_weather+"</div>";
 
+                    //Construct prediction array for google chart
                     _.forEach(pick_results, function(pick_result){
                         predict_pick_array.push([new Date(pick_result[0]), pick_result[1]]);
                     })
@@ -126,6 +135,7 @@ function initMap(){
                         predict_drop_array.push([new Date(drop_result[0]), drop_result[1]]);
                     })
 
+                    //Draw bar chart in the chart section
                     google.charts.load("current", {packages:['corechart', 'bar']});
                     google.setOnLoadCallback(function() { drawPredictChart(predict_pick_array, 'chart7_div', 'available bikes in pick up station in forecast'); });
                     google.setOnLoadCallback(function() { drawPredictChart(predict_drop_array, 'chart8_div', 'available bike stands in drop off station in forecast'); });
@@ -138,7 +148,7 @@ function initMap(){
     });
 
 
-    //remain as main.js
+    //When sumbit button clicked in login mode, render direction between pickup and dropoff station
     $('#submitStation').click(function(){
             clearMarkers();
             bikeLayer.setMap(null);
@@ -181,7 +191,11 @@ function initMap(){
                     if (document.getElementById("profile-username").innerHTML == 'Visitor'){
                     }else{
                     solutonMap = new google.maps.Map(document.getElementById('solution_map'), mapDefault);
+
+                    //render solution route map in the solution section
                     directionsRenderer.setMap(solutonMap);
+
+                    //render solution panel instruction in the solution section
                     directionsRenderer.setPanel(document.getElementById('directionsPanel'));
                     }
                 }
@@ -197,6 +211,7 @@ function initMap(){
     //    showAllStationMarkers();
     //});
 
+    //Show all station marker with current dynamic information on the map
     function showAllStationMarkers(){
         var url_static = "/stations";
         var url_dynamic = "/available";
@@ -224,6 +239,7 @@ function initMap(){
                             var available_bikes = avail.available_bikes;
                             var available_bike_stands = avail.available_bike_stands;
                             var url;
+                            //Present marker with different color based on the number of available bikes.
                             if(available_bikes <= 3){
                                 url = "http://maps.google.com/mapfiles/ms/icons/red-dot.png";
                             }else if(available_bikes <= 10){
@@ -232,12 +248,14 @@ function initMap(){
                                 url = "http://maps.google.com/mapfiles/ms/icons/green-dot.png";
                             }
 
+                            //initialize heatmap weight point option with the number of available bike stands
                             if(available_bike_stands > 25){
                                 weight_point = 1;
                             }else{
                                 weight_point = 0.2;
                             }
 
+                            //Construct heatmap array
                             heatresult.push({
                                 location: new google.maps.LatLng(parseFloat(station.latitude), parseFloat(station.longitude)),
                                 weight: weight_point
@@ -253,15 +271,18 @@ function initMap(){
                                     url:url
                                 }
                             });
+
+                            //Get weather information and present it in weather section
                             document.getElementById("temp_temp").innerHTML = weather.temperature;
                             document.getElementById("temp_wind").innerHTML = weather.windSpeed;
                             document.getElementById("temp_humi").innerHTML = weather.humidity;
                             AllStationMarker.push(marker);
-                            console.log(weather.weatherIcon);
+
+                            //Insert weather icon in the information window
                             var content = "<img src=\"" + weather.weatherIcon + ".png\" style=\"width: 40%\">" + "<p>Bike Station: "+station.name+"</p><p>Available bike stands: "+available_bike_stands+"</p><p>Available bikes: "+available_bikes+"</p>";
                             var infowindow = new google.maps.InfoWindow({maxWidth: 220});
 
-
+                            //Add event listener to show information window when markers are clicked
                             google.maps.event.addListener(marker,'click', (function(marker,content,infowindow){
                                 return function() {
                                     infowindow.setContent(content);
@@ -269,6 +290,7 @@ function initMap(){
                                 };
                             })(marker,content,infowindow));
 
+                            //Add event listener to close information window when other places on map are clicked
                             google.maps.event.addListener(map, 'click', function () {
                                 infowindow.close();
                             });
@@ -292,7 +314,7 @@ function initMap(){
     setDatetimeLimit();
 }
 
-
+//Drop down station selection list
 function dropdownStationMenu(){
     var selectPickUpStation = "<select id='pickupstation' name ='pick'>";
     var selectDropOffStation = "<select id='dropoffstation' name ='drop'>";
@@ -314,6 +336,7 @@ function dropdownStationMenu(){
     });
 }
 
+//Draw charts specified by current time when submit button clicked
 function onclickSubmit(){
     var currentDate = new Date();
     var currentTimestamp = currentDate.getTime();
@@ -346,6 +369,7 @@ function onclickSubmit(){
             var AverageArraydrop = [];
             var total_0 = count_0 = total_1 = count_1 = total_2 = count_2 = total_3 = count_3 = total_4 = count_4 = total_5 = count_5 = total_6 = count_6 = 0;
             _.forEach(pickupInfo, function(pickupInfoElem){
+                //Parse datetime string in javascript regular expression
                 var dateRegexp = /(?<day>[0-9]{2})-(?<month>[a-zA-Z]{3})-(?<year>[0-9]{4})/;
                 var timeRegexp = /(?<hour>[0-9]{2}):(?<minute>[0-9]{2}):(?<second>[0-9]{2})/;
                 var pickupdatetime = pickupInfoElem.datetime;
@@ -354,21 +378,24 @@ function onclickSubmit(){
 
                 IntMonth = monthStringToInt(pickupdate.month);
 
+                //Construct new timestamp object in javascript
                 TimestampElem = toTimestamp(pickupdate.year, IntMonth, pickupdate.day, pickuptime.hour, pickuptime.minute, pickuptime.second);
-                //console.log(TimestampElem);
+
+                //Add daily array for pick up station
                 if((currentTimestamp - TimestampElem)<86400000){
                     DailyArraypick.push([new Date(parseInt(pickupdate.year), parseInt(IntMonth)-1, parseInt(pickupdate.day), parseInt(pickuptime.hour), parseInt(pickuptime.minute), parseInt(pickuptime.second)),pickupInfoElem.available_bikes])
                 }
 
+                //Add weekly array for pick up station
                 if((currentTimestamp - TimestampElem)<604800000){
                     WeeklyArraypick.push([new Date(parseInt(pickupdate.year), parseInt(IntMonth)-1, parseInt(pickupdate.day), parseInt(pickuptime.hour), parseInt(pickuptime.minute), parseInt(pickuptime.second)),pickupInfoElem.available_bike_stands])
                 }
 
+                //Determine day of the week for the timestamp
                 switch (new Date(parseInt(pickupdate.year), parseInt(IntMonth)-1, parseInt(pickupdate.day), parseInt(pickuptime.hour), parseInt(pickuptime.minute), parseInt(pickuptime.second)).getDay()) {
                     case 0:
                       total_0 += pickupInfoElem.available_bikes;
                       count_0 += 1;
-                      console.log(total_0);
                       break;
                     case 1:
                       total_1 += pickupInfoElem.available_bikes;
@@ -397,6 +424,7 @@ function onclickSubmit(){
 
             })
 
+            //Construct average weekly array for pick up station
             AverageArraypick = [
                 ["Mon", total_1/count_1],
                 ["Tue", total_2/count_2],
@@ -407,7 +435,7 @@ function onclickSubmit(){
                 ["Sun", total_0/count_0]
             ];
 
-            console.log(AverageArraypick);
+            //console.log(AverageArraypick);
 
             _.forEach(dropoffInfo, function(dropoffInfoElem){
                 var dateRegexp = /(?<day>[0-9]{2})-(?<month>[a-zA-Z]{3})-(?<year>[0-9]{4})/;
@@ -420,19 +448,21 @@ function onclickSubmit(){
 
                 TimestampElem = toTimestamp(dropoffdate.year, IntMonth, dropoffdate.day, dropofftime.hour, dropofftime.minute, dropofftime.second);
                 //console.log(TimestampElem);
+                //Add daily array for drop off station
                 if((currentTimestamp - TimestampElem)<86400000){
                     DailyArraydrop.push([new Date(parseInt(dropoffdate.year), parseInt(IntMonth)-1, parseInt(dropoffdate.day), parseInt(dropofftime.hour), parseInt(dropofftime.minute), parseInt(dropofftime.second)),dropoffInfoElem.available_bike_stands])
                 }
 
+                //Add weekly array for drop off station
                 if((currentTimestamp - TimestampElem)<604800000){
                     WeeklyArraydrop.push([new Date(parseInt(dropoffdate.year), parseInt(IntMonth)-1, parseInt(dropoffdate.day), parseInt(dropofftime.hour), parseInt(dropofftime.minute), parseInt(dropofftime.second)),dropoffInfoElem.available_bike_stands])
                 }
 
+                //Determine day of the week for the timestamp
                 switch (new Date(parseInt(dropoffdate.year), parseInt(IntMonth)-1, parseInt(dropoffdate.day), parseInt(dropofftime.hour), parseInt(dropofftime.minute), parseInt(dropofftime.second)).getDay()) {
                     case 0:
                       total_0 += dropoffInfoElem.available_bike_stands;
                       count_0 += 1;
-                      console.log(total_0);
                       break;
                     case 1:
                       total_1 += dropoffInfoElem.available_bike_stands;
@@ -462,6 +492,7 @@ function onclickSubmit(){
 
             })
 
+            //Construct average weekly array for drop off station
             AverageArraydrop = [
                 ["Mon", total_1/count_1],
                 ["Tue", total_2/count_2],
@@ -472,6 +503,7 @@ function onclickSubmit(){
                 ["Sun", total_0/count_0]
             ];
 
+            //Draw bar charts and line charts separately
             google.charts.load("current", {packages:['corechart', 'bar']});
             google.setOnLoadCallback(function() { drawDailyChart(DailyArraypick, 'chart1_div', 'available bikes in pick up station in past 24 hours'); });
             google.setOnLoadCallback(function() { drawDailyChart(DailyArraydrop, 'chart2_div', 'available bike stands in drop off station in past 24 hours'); });
@@ -486,7 +518,7 @@ function onclickSubmit(){
 }
 
 function toTimestamp(year,month,day,hour,minute,second){
-    // To get the timestamp in second.
+    // To get the timestamp in millisecond.
     // One day 86400 seconds.
     // One week 604800 seconds.
     var Timestamp = new Date(Date.UTC(year,month-1,day,hour,minute,second));
@@ -494,7 +526,6 @@ function toTimestamp(year,month,day,hour,minute,second){
 }
 
 function monthStringToInt(string){
-    // Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec.
     var num;
     switch (string) {
         case "Jan":
@@ -659,7 +690,7 @@ function drawPredictChart(PredictArray, div_place, titlename) {
     chart.draw(data, google.charts.Bar.convertOptions(options));
 }
 
-
+//Set datetime limit for input calendar
 function setDatetimeLimit(){
     var today = new Date();
     var dd = today.getDate();
@@ -683,6 +714,7 @@ function setDatetimeLimit(){
     }
 }
 
+//Convert weather string to progress bar insertion in html syntax
 function weather_bar(weather){
     var output;
     switch(weather){
